@@ -1,0 +1,301 @@
+/* ── Product page opener: a photograph you look at, with the title over it ── */
+
+.opener {
+  position: relative;
+  min-height: 62svh;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  margin-top: calc(-1 * var(--navH, 92px));
+  padding-top: var(--navH, 92px);
+  padding-bottom: clamp(30px, 4vw, 56px);
+}
+.openerPhoto {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+}
+.openerPhoto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.74) contrast(1.03) saturate(1.08) sepia(0.09);
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 46%,
+    rgba(0, 0, 0, 0.94) 58%,
+    rgba(0, 0, 0, 0.8) 68%,
+    rgba(0, 0, 0, 0.6) 77%,
+    rgba(0, 0, 0, 0.38) 85%,
+    rgba(0, 0, 0, 0.18) 92%,
+    rgba(0, 0, 0, 0.06) 97%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 46%,
+    rgba(0, 0, 0, 0.94) 58%,
+    rgba(0, 0, 0, 0.8) 68%,
+    rgba(0, 0, 0, 0.6) 77%,
+    rgba(0, 0, 0, 0.38) 85%,
+    rgba(0, 0, 0, 0.18) 92%,
+    rgba(0, 0, 0, 0.06) 97%,
+    transparent 100%
+  );
+}
+.openerScrim {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(to bottom, rgba(20, 18, 17, 0.7) 0%, rgba(20, 18, 17, 0.24) 24%, transparent 46%),
+    radial-gradient(96% 68% at 12% 88%, rgba(17, 15, 14, 0.82) 0%, rgba(17, 15, 14, 0.4) 44%, transparent 74%);
+}
+.openerGrid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 26px 48px;
+}
+.openerTitle {
+  color: #fff;
+  text-shadow: 0 2px 26px rgba(0, 0, 0, 0.6);
+  max-width: 15ch;
+}
+.openerTitle em {
+  font-style: normal;
+  color: var(--tan);
+}
+.openerLede {
+  color: #e2d9cc;
+  font-size: clamp(1.02rem, 1.4vw, 1.2rem);
+  max-width: 46ch;
+  margin-top: 18px;
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.85);
+}
+.openerAction {
+  flex: none;
+}
+
+/* ── A section that opens with a full sentence, not a label over a heading ── */
+
+.lead {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  gap: 22px clamp(32px, 6vw, 84px);
+  align-items: end;
+  margin-bottom: clamp(24px, 3vw, 40px);
+}
+.lead h2 {
+  font-size: clamp(1.75rem, 3.2vw, 2.6rem);
+  line-height: 1.07;
+  max-width: 19ch;
+}
+.lead h2 em {
+  font-style: normal;
+  color: var(--tan);
+}
+.lead p {
+  color: var(--fg-2);
+  max-width: 42ch;
+}
+
+/* ── Style list: a drawing, its name, its spec ──────────────────────────── */
+
+.styles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(288px, 1fr));
+  gap: 14px;
+}
+.style {
+  --ch: var(--chamfer);
+}
+.styleInner {
+  --ch: var(--chamfer);
+  background: var(--ink-lift);
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto auto auto 1fr;
+}
+.styleDraw {
+  background: var(--draw-bg);
+  border-bottom: 1px solid var(--edge);
+  overflow: hidden;
+}
+.styleName {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.16rem;
+  color: var(--fg);
+  margin: 0;
+  padding: 17px 20px 0;
+}
+.styleSpec {
+  color: var(--tan-dim);
+  font-size: 0.8rem;
+  padding: 6px 20px 0;
+}
+.styleCopy {
+  color: var(--fg-3);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  padding: 10px 20px 20px;
+}
+
+/* ── Spec table ─────────────────────────────────────────────────────────── */
+
+.specs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(212px, 1fr));
+  gap: 1px;
+  background: var(--edge);
+  border-block: 1px solid var(--edge);
+}
+/* Two banks stacked read as one table: no gap between them, and the borders
+   meet on a single hairline rather than doubling up. */
+.specs:has(+ .specs) {
+  margin-bottom: 0;
+}
+.specs + .specs {
+  margin-top: 0;
+  border-top: 0;
+}
+.spec {
+  background: var(--ink);
+  padding: 20px 22px 22px;
+}
+.specKey {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-4);
+  margin-bottom: 8px;
+}
+.specVal {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.1rem;
+  color: var(--fg);
+  line-height: 1.25;
+  margin: 0 0 6px;
+}
+.specNote {
+  font-size: 0.87rem;
+  color: var(--fg-3);
+  line-height: 1.5;
+}
+
+/* ── Swatch wall for the wood grains ────────────────────────────────────── */
+
+.grains {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+.grain {
+  --ch: var(--chamfer-sm);
+  overflow: hidden;
+  clip-path: polygon(var(--ch) 0, 100% 0, 100% calc(100% - var(--ch)), calc(100% - var(--ch)) 100%, 0 100%, 0 var(--ch));
+  background: var(--ink-lift);
+}
+.grainChip {
+  height: 92px;
+  position: relative;
+}
+.grainName {
+  display: block;
+  padding: 11px 14px 13px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--fg-2);
+  line-height: 1.35;
+}
+
+/* ── Gallery ────────────────────────────────────────────────────────────── */
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(268px, 1fr));
+  gap: 14px;
+}
+.frame {
+  --ch: var(--chamfer);
+  position: relative;
+  overflow: hidden;
+  background: var(--ink-deep);
+  aspect-ratio: 3 / 4;
+  clip-path: polygon(var(--ch) 0, 100% 0, 100% calc(100% - var(--ch)), calc(100% - var(--ch)) 100%, 0 100%, 0 var(--ch));
+}
+.frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.frameWide {
+  aspect-ratio: 4 / 3;
+}
+.cap {
+  display: block;
+  margin-top: 10px;
+  font-size: 0.86rem;
+  color: var(--fg-3);
+  line-height: 1.45;
+}
+
+/* ── Closing band ───────────────────────────────────────────────────────── */
+
+.cta {
+  --ch: var(--chamfer-lg);
+  margin-block: clamp(30px, 4vw, 56px) clamp(46px, 6vw, 88px);
+}
+.ctaInner {
+  --ch: var(--chamfer-lg);
+  background: var(--ink-lift);
+  padding: clamp(26px, 3.6vw, 46px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px clamp(30px, 5vw, 70px);
+  align-items: center;
+}
+.ctaTitle {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+  line-height: 1.1;
+  margin: 0 0 10px;
+  max-width: 20ch;
+}
+.ctaTitle em {
+  font-style: normal;
+  color: var(--tan);
+}
+.ctaCopy {
+  color: var(--fg-3);
+  max-width: 52ch;
+  font-size: 0.96rem;
+}
+.ctaActions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 13px;
+}
+.ctaCall {
+  color: var(--fg-2);
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-variant-numeric: tabular-nums;
+}
+.ctaCall:hover {
+  color: var(--tan-bright);
+}
+
+@media (max-width: 860px) {
+  .openerGrid,
+  .lead,
+  .ctaInner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

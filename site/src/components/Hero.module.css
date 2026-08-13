@@ -1,0 +1,263 @@
+/* The hero owns the first screen exactly: one photograph, filling it, resolving
+   into the page at the bottom edge. Nothing strays in by accident. */
+.root {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  grid-template-rows: 1fr;
+  margin-top: calc(-1 * var(--navH, 92px));
+  padding-top: var(--navH, 92px);
+  isolation: isolate;
+}
+
+.photoWrap {
+  position: absolute;
+  inset: 0;
+  z-index: -5;
+  overflow: hidden;
+  background: var(--ink);
+}
+.photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 56% 40%;
+  /* Graded down and warmed so the picture belongs to the brand's palette
+     rather than fighting it, and so white type can sit on it. */
+  filter: brightness(0.7) contrast(1.06) saturate(1.12) sepia(0.1);
+  /* The photograph fades out of its own pixels at the bottom over a long,
+     finely-eased run, so it dissolves into the page instead of butting
+     against it with a hard line. */
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 50%,
+    rgba(0, 0, 0, 0.985) 58%,
+    rgba(0, 0, 0, 0.95) 65%,
+    rgba(0, 0, 0, 0.88) 71%,
+    rgba(0, 0, 0, 0.77) 76.5%,
+    rgba(0, 0, 0, 0.63) 81.5%,
+    rgba(0, 0, 0, 0.47) 86%,
+    rgba(0, 0, 0, 0.31) 90%,
+    rgba(0, 0, 0, 0.18) 93.5%,
+    rgba(0, 0, 0, 0.08) 96.8%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 50%,
+    rgba(0, 0, 0, 0.985) 58%,
+    rgba(0, 0, 0, 0.95) 65%,
+    rgba(0, 0, 0, 0.88) 71%,
+    rgba(0, 0, 0, 0.77) 76.5%,
+    rgba(0, 0, 0, 0.63) 81.5%,
+    rgba(0, 0, 0, 0.47) 86%,
+    rgba(0, 0, 0, 0.31) 90%,
+    rgba(0, 0, 0, 0.18) 93.5%,
+    rgba(0, 0, 0, 0.08) 96.8%,
+    transparent 100%
+  );
+  will-change: transform;
+}
+
+/* Legibility, in three pieces. Each resolves to nothing before the edge it runs
+   toward, so none of them can ever read as a band of its own. */
+.scrimTop {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 34%;
+  z-index: -4;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(20, 18, 17, 0.78) 0%,
+    rgba(20, 18, 17, 0.52) 28%,
+    rgba(20, 18, 17, 0.24) 55%,
+    rgba(20, 18, 17, 0.07) 80%,
+    transparent 100%
+  );
+}
+/* The floor. Ends on flat page colour, which is what makes the handover to the
+   section below exact at any scroll position: the photograph is parallaxed, so
+   its own fade is not pinned to this edge and a few percent of hillside can ride
+   down past it. This covers that, and the grain above puts the same texture on
+   it as the rest of the page. */
+.scrim {
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    transparent 58%,
+    rgba(34, 32, 32, 0.5) 88%,
+    var(--ink) 100%
+  );
+}
+
+/* The vignette that carries the copy. It is near-black — darker than the page —
+   so where the floor above resolves to exactly page colour, this would not: left
+   to itself it stops dead at the bottom edge and leaves the corner a good ten
+   levels darker than the section beneath, a straight dark line across two thirds
+   of the width. So it is faded out of its own pixels below the copy: full
+   strength everywhere type sits, then a long, finely-stepped dissolve to nothing
+   by the edge. Legibility is untouched; only the handover changes. */
+.vignette {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background: radial-gradient(
+    104% 72% at 14% 82%,
+    rgba(17, 15, 14, 0.86) 0%,
+    rgba(17, 15, 14, 0.62) 32%,
+    rgba(17, 15, 14, 0.26) 58%,
+    transparent 76%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 82%,
+    rgba(0, 0, 0, 0.99) 85%,
+    rgba(0, 0, 0, 0.955) 87.5%,
+    rgba(0, 0, 0, 0.9) 89.5%,
+    rgba(0, 0, 0, 0.82) 91.2%,
+    rgba(0, 0, 0, 0.71) 92.8%,
+    rgba(0, 0, 0, 0.58) 94.3%,
+    rgba(0, 0, 0, 0.44) 95.7%,
+    rgba(0, 0, 0, 0.3) 97%,
+    rgba(0, 0, 0, 0.17) 98.2%,
+    rgba(0, 0, 0, 0.07) 99.2%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 82%,
+    rgba(0, 0, 0, 0.99) 85%,
+    rgba(0, 0, 0, 0.955) 87.5%,
+    rgba(0, 0, 0, 0.9) 89.5%,
+    rgba(0, 0, 0, 0.82) 91.2%,
+    rgba(0, 0, 0, 0.71) 92.8%,
+    rgba(0, 0, 0, 0.58) 94.3%,
+    rgba(0, 0, 0, 0.44) 95.7%,
+    rgba(0, 0, 0, 0.3) 97%,
+    rgba(0, 0, 0, 0.17) 98.2%,
+    rgba(0, 0, 0, 0.07) 99.2%,
+    transparent 100%
+  );
+}
+
+/* The hero lays down its own opaque floor, which would otherwise hide the grain
+   the rest of the page carries on <body> and leave the whole first screen about
+   three levels darker than the section under it — a hairline step, dead
+   straight across the full width, right where the two meet. Same texture, same
+   opacity, laid over the scrims and under every piece of content, so the hero
+   and the page below it are one surface with nothing to seam against. */
+.grain {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* The copy sits low, but has to stop well clear of the bottom edge: the last
+   sixth of the hero is where the photograph masks away to nothing, and type
+   left down there would float on flat ink and make the picture look cut short.
+   This keeps the block sitting on photograph, with the fade reading as the
+   picture resolving into the page rather than running out. */
+.inner {
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: clamp(76px, 15vh, 200px);
+}
+
+.grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 36px 48px;
+}
+
+.copy {
+  max-width: 41rem;
+}
+
+.h1 {
+  color: #fff;
+  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.62), 0 1px 4px rgba(0, 0, 0, 0.55);
+  margin-bottom: 20px;
+}
+.h1 em {
+  font-style: normal;
+  color: var(--tan);
+}
+
+.sub {
+  color: #e6ddd0;
+  font-size: clamp(1.02rem, 1.35vw, 1.2rem);
+  max-width: 40ch;
+  margin-bottom: 28px;
+  text-shadow: 0 1px 16px rgba(0, 0, 0, 0.85);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  flex-wrap: wrap;
+}
+
+/* The fabricator's stamp, carrying real data about the job in the photograph. */
+.stamp {
+  --ch: 14px;
+  max-width: 320px;
+}
+.stampInner {
+  --ch: 14px;
+  background: rgba(21, 19, 18, 0.86);
+  backdrop-filter: blur(10px) saturate(1.05);
+  padding: 18px 20px 19px;
+}
+.stampHead {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 0.95rem;
+  color: var(--fg);
+  margin: 0 0 12px;
+}
+.stampRows {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+.stampRow {
+  display: grid;
+  grid-template-columns: 62px 1fr;
+  gap: 12px;
+  align-items: baseline;
+  font-size: 0.83rem;
+}
+.stampRow dt {
+  color: var(--fg-4);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+.stampRow dd {
+  margin: 0;
+  color: var(--fg-2);
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .stamp {
+    display: none;
+  }
+}

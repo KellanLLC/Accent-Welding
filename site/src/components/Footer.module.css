@@ -1,0 +1,150 @@
+.root {
+  position: relative;
+  margin-top: clamp(50px, 8vw, 96px);
+  background: linear-gradient(180deg, var(--ink) 0%, #1b1918 46%, #151313 100%);
+  overflow: hidden;
+}
+
+/* The footer opens with the drawing's title block — the site's own recurring
+   object, used where a title block actually belongs: the bottom of the sheet. */
+.stamp {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(158px, 1fr));
+  gap: 1px;
+  background: var(--edge);
+  border-block: 1px solid var(--edge);
+}
+.cell {
+  background: #1c1a19;
+  padding: 20px 22px 22px;
+}
+.cellKey {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--fg-4);
+  margin-bottom: 7px;
+}
+.cellVal {
+  overflow-wrap: anywhere;
+  max-width: 100%;
+  font-size: 1.02rem;
+  font-weight: 600;
+  color: var(--fg);
+  line-height: 1.3;
+  text-decoration: none;
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+}
+a.cellVal:hover {
+  color: var(--tan-bright);
+}
+.cellNote {
+  display: block;
+  font-size: 0.86rem;
+  font-weight: 400;
+  color: var(--fg-3);
+  margin-top: 5px;
+  font-variant-numeric: normal;
+}
+
+.mid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px 48px;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-block: 40px 34px;
+}
+.cols {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px 54px;
+}
+.col {
+  display: grid;
+  gap: 9px;
+  align-content: start;
+}
+.colHead {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.02rem;
+  color: var(--fg);
+  margin: 0 0 4px;
+}
+.col a {
+  color: var(--fg-3);
+  text-decoration: none;
+  font-size: 0.94rem;
+  transition: color 160ms var(--ease);
+}
+.col a:hover {
+  color: var(--tan-bright);
+}
+
+.social {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+/* Bare marks. No tile, no chip, no circle behind them. */
+.social a {
+  color: var(--fg-3);
+  transition: color 180ms var(--ease);
+  display: block;
+}
+.social a:hover {
+  color: var(--tan-bright);
+}
+
+.colophon {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 26px;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 26px;
+  font-size: 0.84rem;
+  color: var(--fg-4);
+}
+.colophon a {
+  color: var(--fg-4);
+  text-decoration: none;
+}
+.colophon a:hover {
+  color: var(--fg-2);
+}
+
+/* The build credit. Set in the body face rather than the display serif, and
+   underlined properly — offset clear of the descenders, hairline weight, the
+   rule carried at half strength until you are on it. */
+.colophon .madeBy {
+  font-family: var(--font-body), system-ui, sans-serif;
+  text-transform: uppercase;
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--fg-3);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgba(141, 131, 119, 0.5);
+  transition: color 220ms var(--ease), text-decoration-color 220ms var(--ease);
+}
+.colophon .madeBy:hover {
+  color: var(--tan-bright);
+  text-decoration-color: var(--tan-bright);
+}
+
+/* The signature. Flush to the very bottom edge with no gap beneath it, on the
+   layer above everything, generous tracking, cropped only a hair at the
+   baseline so it reads as a deliberate bleed rather than an accident.
+   Nothing above the caps is ever cut. */
+.signature {
+  display: block;
+  width: 100%;
+  color: #322d2a;
+  pointer-events: none;
+}

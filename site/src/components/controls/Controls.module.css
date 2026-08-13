@@ -1,0 +1,439 @@
+.field {
+  display: block;
+  margin: 0 0 30px;
+  min-width: 0;
+  border: 0;
+  padding: 0;
+}
+
+/* The real legend stays for assistive tech; the visible label is a sibling so
+   it can lay out with a hint beside it without fighting legend's box model. */
+.legendHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+.fieldBody {
+  min-width: 0;
+}
+.legend {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  padding: 0;
+  margin: 0 0 12px;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.06rem;
+  color: var(--fg);
+}
+.hint {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: var(--fg-3);
+  text-align: right;
+}
+
+/* ── option grid ────────────────────────────────────────────────────────── */
+
+.options {
+  display: grid;
+  gap: 9px;
+}
+.cols2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.cols3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.option {
+  --ch: 9px;
+  position: relative;
+  display: block;
+  cursor: pointer;
+  background: var(--edge-soft);
+  padding: 1px;
+  clip-path: polygon(var(--ch) 0, 100% 0, 100% calc(100% - var(--ch)), calc(100% - var(--ch)) 100%, 0 100%, 0 var(--ch));
+  transition: background 170ms var(--ease);
+}
+.option:hover {
+  background: var(--edge-strong);
+}
+.optionOn {
+  background: var(--tan);
+}
+.optionOn:hover {
+  background: var(--tan-bright);
+}
+
+.optionBody {
+  --ch: 9px;
+  clip-path: polygon(var(--ch) 0, 100% 0, 100% calc(100% - var(--ch)), calc(100% - var(--ch)) 100%, 0 100%, 0 var(--ch));
+  background: var(--panel);
+  /* Content padded well clear of both chamfers on every side. */
+  padding: 14px 17px 15px;
+  height: 100%;
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  box-shadow: inset 0 1px 0 var(--lip);
+  transition: background 170ms var(--ease);
+}
+.option:hover .optionBody {
+  background: var(--panel-2);
+}
+.optionOn .optionBody {
+  background: #3a332a;
+}
+
+.optionName {
+  font-weight: 600;
+  font-size: 0.96rem;
+  color: var(--fg);
+  line-height: 1.28;
+}
+.optionOn .optionName {
+  color: var(--tan-bright);
+}
+.optionNote {
+  font-size: 0.82rem;
+  color: var(--fg-3);
+  line-height: 1.4;
+}
+.optionMeta {
+  font-size: 0.8rem;
+  color: var(--tan-dim);
+  font-variant-numeric: tabular-nums;
+  margin-top: 2px;
+}
+.optionOn .optionMeta {
+  color: var(--tan);
+}
+
+.option input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+.option:has(input:focus-visible) {
+  outline: 2px solid var(--tan);
+  outline-offset: 3px;
+}
+
+/* ── segmented ──────────────────────────────────────────────────────────── */
+
+.segmented {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1px;
+  background: var(--edge);
+  padding: 1px;
+}
+.seg {
+  position: relative;
+  flex: 1 1 auto;
+  text-align: center;
+  padding: 12px 14px;
+  background: var(--panel);
+  color: var(--fg-2);
+  font-weight: 600;
+  font-size: 0.94rem;
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+  transition: background 160ms var(--ease), color 160ms var(--ease);
+  white-space: nowrap;
+}
+.seg:hover {
+  background: var(--panel-2);
+  color: var(--fg);
+}
+.segOn {
+  background: var(--tan);
+  color: #201d18;
+}
+.segOn:hover {
+  background: var(--tan-bright);
+  color: #201d18;
+}
+.seg input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+.seg:has(input:focus-visible) {
+  outline: 2px solid var(--tan);
+  outline-offset: 2px;
+  z-index: 1;
+}
+
+/* ── number stepper ─────────────────────────────────────────────────────── */
+
+.stepper {
+  display: flex;
+  align-items: stretch;
+  gap: 1px;
+  background: var(--edge);
+  padding: 1px;
+  width: fit-content;
+  max-width: 100%;
+  flex: 0 1 auto;
+}
+.stepBtn {
+  width: 46px;
+  border: 0;
+  background: var(--panel);
+  color: var(--fg);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 150ms var(--ease);
+}
+.stepBtn:hover:not(:disabled) {
+  background: var(--panel-2);
+}
+.stepBtn:disabled {
+  color: var(--fg-4);
+  cursor: not-allowed;
+}
+.stepVal {
+  background: var(--panel);
+  border: 0;
+  width: 96px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.04rem;
+  font-variant-numeric: tabular-nums;
+  padding: 12px 6px;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+.stepVal::-webkit-outer-spin-button,
+.stepVal::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.stepUnit {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  background: var(--panel);
+  color: var(--fg-3);
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+/* ── slider ─────────────────────────────────────────────────────────────── */
+
+.sliderRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+.slider {
+  /* flex-basis plus min-width:0 so the track can shrink instead of forcing the
+     whole controls column wider than the viewport. */
+  flex: 1 1 150px;
+  min-width: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 3px;
+  background: linear-gradient(
+    to right,
+    var(--tan) 0%,
+    var(--tan) var(--pct, 50%),
+    var(--edge-strong) var(--pct, 50%),
+    var(--edge-strong) 100%
+  );
+  cursor: pointer;
+  border-radius: 2px;
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 26px;
+  background: var(--tan);
+  cursor: grab;
+  clip-path: polygon(0 0, 100% 0, 100% 78%, 50% 100%, 0 78%);
+  box-shadow: inset 0 1px 0 rgba(255, 252, 245, 0.6);
+}
+.slider::-webkit-slider-thumb:active {
+  cursor: grabbing;
+  background: var(--tan-bright);
+}
+.slider::-moz-range-thumb {
+  width: 15px;
+  height: 26px;
+  border: 0;
+  background: var(--tan);
+  cursor: grab;
+  clip-path: polygon(0 0, 100% 0, 100% 78%, 50% 100%, 0 78%);
+}
+
+/* ── swatches ───────────────────────────────────────────────────────────── */
+
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+  gap: 9px;
+}
+.swatch {
+  position: relative;
+  cursor: pointer;
+  display: grid;
+  gap: 0;
+  background: var(--edge-soft);
+  padding: 1px;
+  transition: background 170ms var(--ease);
+}
+.swatch:hover {
+  background: var(--edge-strong);
+}
+.swatchOn {
+  background: var(--tan);
+}
+.chip {
+  height: 46px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+.swatchName {
+  background: var(--panel);
+  padding: 8px 10px 9px;
+  font-size: 0.76rem;
+  line-height: 1.28;
+  color: var(--fg-2);
+  font-weight: 500;
+}
+.swatchOn .swatchName {
+  background: #3a332a;
+  color: var(--tan-bright);
+  font-weight: 600;
+}
+.swatch input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+.swatch:has(input:focus-visible) {
+  outline: 2px solid var(--tan);
+  outline-offset: 3px;
+}
+
+/* ── checkbox list ──────────────────────────────────────────────────────── */
+
+.checks {
+  display: grid;
+  gap: 9px;
+}
+.check {
+  --ch: 9px;
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 13px;
+  align-items: center;
+  cursor: pointer;
+  background: var(--panel);
+  padding: 13px 17px;
+  clip-path: polygon(var(--ch) 0, 100% 0, 100% calc(100% - var(--ch)), calc(100% - var(--ch)) 100%, 0 100%, 0 var(--ch));
+  box-shadow: inset 0 1px 0 var(--lip);
+  transition: background 160ms var(--ease);
+}
+.check:hover {
+  background: var(--panel-2);
+}
+.checkOn {
+  background: #3a332a;
+}
+.checkOn:hover {
+  background: #443c31;
+}
+.check input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+.check:has(input:focus-visible) {
+  outline: 2px solid var(--tan);
+  outline-offset: 3px;
+}
+.box {
+  width: 19px;
+  height: 19px;
+  border: 1.5px solid var(--edge-strong);
+  display: grid;
+  place-items: center;
+  color: transparent;
+  transition: border-color 160ms var(--ease), background 160ms var(--ease);
+}
+.checkOn .box {
+  background: var(--tan);
+  border-color: var(--tan);
+  color: #201d18;
+}
+.checkName {
+  font-weight: 600;
+  font-size: 0.94rem;
+}
+.checkNote {
+  display: block;
+  font-weight: 400;
+  font-size: 0.82rem;
+  color: var(--fg-3);
+  margin-top: 2px;
+}
+.checkPrice {
+  font-size: 0.86rem;
+  color: var(--tan-dim);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.checkOn .checkPrice {
+  color: var(--tan);
+}
+
+@media (max-width: 620px) {
+  .cols3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 420px) {
+  .cols2,
+  .cols3 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .stepVal {
+    width: 64px;
+  }
+  .stepBtn {
+    width: 40px;
+  }
+  .stepUnit {
+    padding: 0 11px;
+    font-size: 0.85rem;
+  }
+}

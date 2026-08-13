@@ -1,0 +1,86 @@
+.root {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  gap: clamp(24px, 3vw, 46px);
+  align-items: center;
+}
+
+.stage {
+  background: var(--draw-bg);
+  border: 1px solid var(--edge);
+  padding: 10px 10px 0;
+  overflow: hidden;
+}
+
+.panel {
+  min-width: 0;
+}
+
+.title {
+  margin-bottom: 14px;
+}
+
+.copy {
+  color: var(--fg-2);
+  max-width: 44ch;
+  margin-bottom: 26px;
+}
+
+.control {
+  margin-bottom: 18px;
+}
+
+.label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--fg-3);
+  margin-bottom: 9px;
+}
+
+.priceRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: baseline;
+  padding-top: 18px;
+  margin-top: 24px;
+  border-top: 1px solid var(--edge);
+}
+
+.priceKey {
+  font-size: 0.9rem;
+  color: var(--fg-2);
+}
+
+.priceSub {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--fg-4);
+  margin-top: 2px;
+  font-variant-numeric: tabular-nums;
+}
+
+.priceVal {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(1.6rem, 2.6vw, 2.15rem);
+  line-height: 1;
+  color: var(--tan);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-top: 26px;
+}
+
+@media (max-width: 900px) {
+  .root {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

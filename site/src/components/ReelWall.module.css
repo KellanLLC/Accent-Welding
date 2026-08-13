@@ -1,0 +1,68 @@
+.wall {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tile {
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: 11px;
+}
+
+.frame {
+  --ch: var(--chamfer);
+  position: relative;
+  background: var(--ink-deep);
+  aspect-ratio: 9 / 14;
+  overflow: hidden;
+  clip-path: polygon(
+    var(--ch) 0,
+    100% 0,
+    100% calc(100% - var(--ch)),
+    calc(100% - var(--ch)) 100%,
+    0 100%,
+    0 var(--ch)
+  );
+}
+
+.video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* The caption sits BELOW the frame. Several of these clips carry burnt-in
+   captions of their own, and an overlay would collide with them. */
+.meta {
+  display: grid;
+  gap: 3px;
+}
+
+.caption {
+  color: var(--fg);
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.views {
+  font-size: 0.76rem;
+  color: var(--fg-4);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 900px) {
+  .wall {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 460px) {
+  .wall {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

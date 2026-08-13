@@ -1,0 +1,309 @@
+.root {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+/* At rest over the hero photograph it is transparent, so the picture owns the
+   fold. Once you scroll past it, it becomes a real surface.
+   The surface is one layer — colour, blur and the hairline together — and it
+   arrives on opacity alone, so nothing pops in ahead of anything else. The
+   bar's height never changes either, so the page below it cannot jump as the
+   nav takes on its surface. */
+.root::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: rgba(26, 24, 23, 0.94);
+  -webkit-backdrop-filter: blur(14px) saturate(1.1);
+  backdrop-filter: blur(14px) saturate(1.1);
+  box-shadow: 0 1px 0 var(--edge);
+  opacity: 0;
+  transition: opacity 260ms var(--ease);
+}
+.stuck::before {
+  opacity: 1;
+}
+
+/* The gap lives on .callWrap rather than on the bar, because below 1080px the
+   links inside <nav> are hidden and the empty element would still take a full
+   gap of its own — 26px of nothing, which is most of why this bar used to run
+   off the side of a small phone. The brand's margin-right:auto already opens
+   the space on the left, so nothing moves on a wide screen. */
+.bar {
+  display: flex;
+  align-items: center;
+  padding-block: 22px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  flex: none;
+  margin-right: auto;
+}
+.brandMark {
+  transition: transform 420ms var(--ease-out);
+}
+.brand:hover .brandMark {
+  transform: translateY(-2px);
+}
+.word {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 700;
+  font-size: 1.16rem;
+  letter-spacing: 0.012em;
+  line-height: 1;
+  color: var(--fg);
+  white-space: nowrap;
+}
+.est {
+  display: block;
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  color: var(--tan);
+  margin-top: 4px;
+}
+
+.links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.link {
+  display: block;
+  padding: 9px 13px;
+  text-decoration: none;
+  color: var(--fg-2);
+  font-size: 0.93rem;
+  font-weight: 500;
+  transition: color 160ms var(--ease);
+}
+.link:hover {
+  color: var(--fg);
+}
+/* Active state is carried by the type itself — no dot, no underline. */
+.active {
+  color: var(--tan-bright);
+  font-weight: 600;
+}
+
+/* ── Order ──────────────────────────────────────────────────────────────── */
+/* One control in place of four links. It opens on click, closes on Escape or
+   on a click outside, and the four rows are out of the tab order while it is
+   shut, so the keyboard never lands on something nobody can see. */
+
+.orderWrap {
+  position: relative;
+}
+.orderBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.93rem;
+  font-weight: 500;
+}
+
+.orderMenu {
+  --ch: var(--chamfer-sm);
+  position: absolute;
+  top: calc(100% + 9px);
+  left: 0;
+  z-index: 2;
+  min-width: 188px;
+  list-style: none;
+  margin: 0;
+  padding: 5px;
+  background: #201d1c;
+  box-shadow: inset 0 1px 0 var(--lip), 0 2px 10px rgba(10, 8, 8, 0.34);
+  clip-path: polygon(
+    var(--ch) 0,
+    100% 0,
+    100% calc(100% - var(--ch)),
+    calc(100% - var(--ch)) 100%,
+    0 100%,
+    0 var(--ch)
+  );
+  /* Shut is display:none, not a hidden-but-present layer — nothing to click
+     through, and no invisible content sitting over the page. */
+  display: none;
+}
+.orderOpen {
+  display: block;
+}
+.orderItem {
+  display: block;
+  padding: 10px 14px;
+  text-decoration: none;
+  color: var(--fg-2);
+  font-size: 0.93rem;
+  white-space: nowrap;
+  transition: background 150ms var(--ease), color 150ms var(--ease);
+}
+.orderItem:hover {
+  background: var(--panel-2);
+  color: var(--fg);
+}
+.orderItemOn {
+  color: var(--tan-bright);
+  font-weight: 600;
+}
+
+.callWrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: none;
+  margin-left: 26px;
+}
+.phone {
+  text-decoration: none;
+  color: var(--fg);
+  font-weight: 600;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  transition: color 160ms var(--ease);
+}
+.phone:hover {
+  color: var(--tan-bright);
+}
+
+.cta {
+  --ch: 8px;
+  padding: 11px 20px;
+  font-size: 0.92rem;
+  white-space: nowrap;
+}
+
+/* ── mobile ─────────────────────────────────────────────────────────────── */
+
+.burger {
+  display: none;
+  --ch: 7px;
+  background: var(--panel-2);
+  color: var(--fg);
+  border: 0;
+  padding: 10px 15px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  align-items: center;
+  gap: 9px;
+  clip-path: polygon(var(--ch) 0, 100% 0, 100% calc(100% - var(--ch)), calc(100% - var(--ch)) 100%, 0 100%, 0 var(--ch));
+  box-shadow: inset 0 1px 0 var(--lip);
+}
+
+.panel {
+  display: none;
+  border-top: 1px solid var(--edge);
+  background: rgba(23, 21, 20, 0.985);
+  backdrop-filter: blur(14px);
+  padding: 10px 0 22px;
+}
+.panelOpen {
+  display: block;
+}
+.panelList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.panelLink {
+  display: block;
+  padding: 15px 2px;
+  text-decoration: none;
+  color: var(--fg);
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.4rem;
+  border-bottom: 1px solid var(--edge-soft);
+}
+.panelLink:last-child {
+  border-bottom: 0;
+}
+.panelActions {
+  display: grid;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+@media (max-width: 1080px) {
+  .links,
+  .phone {
+    display: none;
+  }
+  .burger {
+    display: inline-flex;
+  }
+}
+/* Small phones. The brand is flex:none and its wordmark cannot wrap, so on a
+   320px screen it has to give a little or it pushes the burger off the edge.
+   The mark and the type step down together, keeping the lockup in proportion
+   rather than shrinking one part of it. */
+@media (max-width: 560px) {
+  .cta {
+    display: none;
+  }
+  .brand {
+    gap: 10px;
+  }
+  .brandMark {
+    width: 38px;
+    height: 21px;
+  }
+  .word {
+    font-size: 1.02rem;
+  }
+  .est {
+    font-size: 0.54rem;
+    letter-spacing: 0.26em;
+    margin-top: 3px;
+  }
+  .callWrap {
+    margin-left: 14px;
+  }
+  .burger {
+    padding: 10px 12px;
+    gap: 7px;
+    font-size: 0.86rem;
+  }
+}
+
+/* The smallest phones still sold. The brand pushes everything else to the right
+   edge of the gutter, so anything that does not fit here does not merely look
+   tight — it hangs into the margin and leaves the bar sitting off-centre
+   against every other row on the page. One more step down keeps both ends of
+   the bar on the same gutter as the content below it. */
+@media (max-width: 380px) {
+  .brand {
+    gap: 9px;
+  }
+  .brandMark {
+    width: 35px;
+    height: 19px;
+  }
+  .word {
+    font-size: 0.96rem;
+  }
+  .callWrap {
+    margin-left: 10px;
+  }
+  .burger {
+    padding: 10px 11px;
+    gap: 6px;
+    font-size: 0.82rem;
+  }
+}

@@ -1,0 +1,139 @@
+.head {
+  padding-block: clamp(44px, 7vw, 88px) clamp(26px, 3vw, 40px);
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 26px clamp(32px, 5vw, 78px);
+  align-items: end;
+}
+.title {
+  margin-bottom: 0;
+}
+.title em {
+  font-style: normal;
+  color: var(--tan);
+}
+.blurb {
+  color: var(--fg-2);
+  font-size: clamp(1rem, 1.3vw, 1.16rem);
+  max-width: 44ch;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  padding-bottom: clamp(48px, 7vw, 96px);
+}
+
+.card {
+  --ch: var(--chamfer-lg);
+  text-decoration: none;
+  display: block;
+  transition: background 200ms var(--ease);
+}
+.card:hover {
+  background: var(--edge-strong);
+}
+.cardInner {
+  --ch: var(--chamfer-lg);
+  background: var(--ink-lift);
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100%;
+  transition: background 200ms var(--ease);
+}
+.card:hover .cardInner {
+  background: #2f2b29;
+}
+
+/* One frame for all four drawings. The frame is a fixed proportion rather than
+   whatever shape each drawing happens to be, so every preview is exactly the
+   same height and the name, the note and the price line below it land on the
+   same lines right across the grid. The drawing surface lives on the frame, so
+   a drawing that does not fill it leaves no band behind it. */
+.preview {
+  aspect-ratio: 16 / 9;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(120% 90% at 50% 0%, #211f1e 0%, var(--draw-bg) 70%);
+  border-bottom: 1px solid var(--edge);
+  overflow: hidden;
+  position: relative;
+}
+/* Contained, never cropped: a drawing taller than the frame is scaled to fit
+   inside it rather than having its dimension lines sliced off. */
+.preview > svg {
+  max-height: 100%;
+  background: transparent;
+}
+
+.body {
+  padding: 20px 24px 24px;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 7px;
+}
+.name {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(1.28rem, 2vw, 1.62rem);
+  color: var(--fg);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+.name .arrow {
+  color: var(--tan);
+  transition: transform 280ms var(--ease-out);
+}
+.card:hover .name .arrow {
+  transform: translate(3px, -3px);
+}
+.note {
+  color: var(--fg-3);
+  font-size: 0.94rem;
+  line-height: 1.5;
+  max-width: 40ch;
+}
+.priced {
+  margin-top: 7px;
+  font-size: 0.84rem;
+  color: var(--tan-dim);
+  font-variant-numeric: tabular-nums;
+}
+.pricedReal {
+  color: var(--tan);
+  font-weight: 600;
+}
+
+.aside {
+  --ch: var(--chamfer);
+  margin-bottom: clamp(48px, 7vw, 96px);
+}
+.asideInner {
+  --ch: var(--chamfer);
+  background: var(--ink-deep);
+  padding: clamp(24px, 3vw, 36px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px 40px;
+  align-items: center;
+}
+.asideText h2 {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  margin: 0 0 9px;
+}
+.asideText p {
+  color: var(--fg-3);
+  max-width: 58ch;
+  font-size: 0.96rem;
+}
+
+@media (max-width: 860px) {
+  .head,
+  .grid,
+  .asideInner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

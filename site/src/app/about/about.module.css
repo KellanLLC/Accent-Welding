@@ -1,0 +1,154 @@
+.two {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: clamp(28px, 4vw, 64px);
+  align-items: start;
+}
+
+.h {
+  margin-bottom: 20px;
+  max-width: 22ch;
+}
+
+.prose {
+  display: grid;
+  gap: 16px;
+  color: var(--fg-2);
+  max-width: 58ch;
+}
+
+/* The photograph is its own object — no panel behind it. A dark box drawn
+   around an already-dark picture only reads as a box inside a box. */
+.lockupWrap {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  align-content: start;
+}
+
+/* The card, in the chamfered plate silhouette the rest of the site uses. */
+.cardFrame {
+  --ch: var(--chamfer);
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  background: var(--ink);
+  clip-path: polygon(
+    var(--ch) 0,
+    100% 0,
+    100% calc(100% - var(--ch)),
+    calc(100% - var(--ch)) 100%,
+    0 100%,
+    0 var(--ch)
+  );
+}
+.cardImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 52%;
+}
+
+.lockupCap {
+  font-size: 0.84rem;
+  color: var(--fg-4);
+  text-align: center;
+  max-width: 34ch;
+}
+
+.quote {
+  --ch: var(--chamfer-lg);
+}
+
+.quoteInner {
+  --ch: var(--chamfer-lg);
+  background: var(--ink-lift);
+  padding: clamp(24px, 3vw, 40px);
+}
+
+.quoteText {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(1.08rem, 1.7vw, 1.36rem);
+  line-height: 1.4;
+  color: var(--fg);
+  margin: 0 0 20px;
+  max-width: 62ch;
+}
+
+.quoteWho {
+  display: grid;
+  gap: 3px;
+  font-size: 0.88rem;
+}
+
+.quoteName {
+  color: var(--tan);
+  font-weight: 600;
+}
+
+.quoteMeta {
+  color: var(--fg-4);
+}
+
+.quoteMeta a {
+  color: var(--fg-3);
+  text-decoration: none;
+}
+
+.quoteMeta a:hover {
+  color: var(--tan-bright);
+}
+
+/* A photographic breath, feathered at both edges into the page colour. */
+.shopStrip {
+  position: relative;
+  height: clamp(220px, 34vw, 400px);
+  overflow: hidden;
+}
+
+.shopImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* A portrait phone frame cropped to a band: held on the run and the man
+     working it, clear of the sky above and the kerb below. */
+  object-position: 50% 46%;
+  filter: brightness(0.72) contrast(1.05) saturate(0.72) sepia(0.2);
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, 0.1) 7%,
+    rgba(0, 0, 0, 0.36) 14%,
+    rgba(0, 0, 0, 0.66) 22%,
+    rgba(0, 0, 0, 0.9) 30%,
+    #000 38%,
+    #000 64%,
+    rgba(0, 0, 0, 0.88) 72%,
+    rgba(0, 0, 0, 0.6) 80%,
+    rgba(0, 0, 0, 0.32) 88%,
+    rgba(0, 0, 0, 0.1) 95%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, 0.1) 7%,
+    rgba(0, 0, 0, 0.36) 14%,
+    rgba(0, 0, 0, 0.66) 22%,
+    rgba(0, 0, 0, 0.9) 30%,
+    #000 38%,
+    #000 64%,
+    rgba(0, 0, 0, 0.88) 72%,
+    rgba(0, 0, 0, 0.6) 80%,
+    rgba(0, 0, 0, 0.32) 88%,
+    rgba(0, 0, 0, 0.1) 95%,
+    transparent 100%
+  );
+}
+
+@media (max-width: 880px) {
+  .two {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

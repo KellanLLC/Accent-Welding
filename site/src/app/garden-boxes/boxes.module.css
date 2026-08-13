@@ -1,0 +1,98 @@
+.tableWrap {
+  border-block: 1px solid var(--edge);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.94rem;
+  min-width: 520px;
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--edge-soft);
+  vertical-align: baseline;
+}
+
+.table thead th {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-4);
+  border-bottom-color: var(--edge);
+  padding-block: 14px;
+}
+
+.table tbody th {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--fg);
+  white-space: nowrap;
+}
+
+.table td {
+  color: var(--fg-2);
+}
+
+/* Every price sits in one right-aligned tabular column, so the numbers stack
+   digit over digit down the whole table. */
+.num {
+  text-align: right !important;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.table tbody .num {
+  color: var(--fg);
+  font-weight: 600;
+}
+
+.groupStart th,
+.groupStart td {
+  border-top: 1px solid var(--edge);
+}
+
+.table tbody tr:hover td,
+.table tbody tr:hover th {
+  background: var(--ink-lift);
+}
+
+.tableNote {
+  margin-top: 16px;
+  font-size: 0.87rem;
+  color: var(--fg-3);
+  max-width: 62ch;
+}
+
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  gap: clamp(26px, 3.4vw, 52px);
+  align-items: center;
+}
+
+.splitDraw {
+  background: var(--draw-bg);
+  border: 1px solid var(--edge);
+  padding: 8px;
+}
+
+.splitTitle {
+  margin-bottom: 20px;
+}
+
+@media (max-width: 880px) {
+  .split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.sizeCell {
+  min-width: 96px;
+}

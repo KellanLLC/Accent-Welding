@@ -1,0 +1,278 @@
+.head {
+  padding-block: clamp(30px, 5vw, 54px) 26px;
+}
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--fg-3);
+  text-decoration: none;
+  font-size: 0.88rem;
+  margin-bottom: 20px;
+}
+.crumb:hover {
+  color: var(--tan-bright);
+}
+.title {
+  margin-bottom: 12px;
+}
+.blurb {
+  color: var(--fg-2);
+  max-width: 52ch;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 420px);
+  gap: clamp(28px, 3.4vw, 52px);
+  align-items: start;
+  padding-bottom: clamp(48px, 7vw, 96px);
+}
+
+/* Drawing + price ride along with you as you configure. */
+.rail {
+  position: sticky;
+  top: 88px;
+  display: grid;
+  gap: 16px;
+}
+
+.drawing {
+  --ch: var(--chamfer-lg);
+}
+.drawingInner {
+  --ch: var(--chamfer-lg);
+  background: var(--draw-bg);
+  padding: 6px 6px 0;
+  overflow: hidden;
+}
+
+.sheetHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 11px 15px 12px;
+  border-bottom: 1px solid var(--edge);
+}
+.sheetTitle {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 0.95rem;
+  color: var(--fg);
+  margin: 0;
+}
+.sheetScale {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--fg-4);
+}
+
+.block {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(88px, 1fr));
+  gap: 1px;
+  background: var(--edge);
+  border-top: 1px solid var(--edge);
+}
+.blockCell {
+  background: var(--ink-deep);
+  padding: 9px 12px 10px;
+  min-width: 0;
+}
+.blockKey {
+  display: block;
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--fg-4);
+  margin-bottom: 4px;
+}
+.blockVal {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--fg);
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+/* ── price ──────────────────────────────────────────────────────────────── */
+
+.price {
+  --ch: var(--chamfer);
+}
+.priceInner {
+  --ch: var(--chamfer);
+  background: var(--panel);
+  padding: 20px 22px 22px;
+}
+.rows {
+  display: grid;
+  gap: 9px;
+  margin: 0 0 15px;
+}
+/* Every line sits on the same two-column grid, so the numbers form one column
+   no matter how long the labels run. */
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: baseline;
+  font-size: 0.9rem;
+}
+.rowLabel {
+  color: var(--fg-2);
+}
+.rowSub {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--fg-4);
+  margin-top: 1px;
+}
+.rowVal {
+  color: var(--fg);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.rowMuted .rowVal {
+  color: var(--fg-3);
+  font-weight: 500;
+}
+
+.total {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: baseline;
+  padding-top: 15px;
+  border-top: 1px solid var(--edge);
+}
+.totalKey {
+  font-size: 0.84rem;
+  color: var(--fg-2);
+}
+.totalKeySub {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--fg-4);
+  margin-top: 2px;
+}
+.totalVal {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(1.5rem, 2.4vw, 1.95rem);
+  line-height: 1;
+  color: var(--tan);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+.totalRange {
+  font-size: clamp(1.15rem, 1.9vw, 1.45rem);
+}
+
+.lead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 15px;
+  padding-top: 14px;
+  border-top: 1px solid var(--edge-soft);
+  font-size: 0.85rem;
+  color: var(--fg-3);
+}
+.leadVal {
+  color: var(--fg);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.disclaimer {
+  margin-top: 14px;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--fg-4);
+}
+
+.actions {
+  display: grid;
+  gap: 11px;
+  margin-top: 18px;
+}
+.actions .btn {
+  width: 100%;
+}
+
+.callRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.86rem;
+  color: var(--fg-3);
+  margin-top: 3px;
+}
+.callRow a {
+  color: var(--fg);
+  font-weight: 600;
+  text-decoration: none;
+  font-variant-numeric: tabular-nums;
+}
+.callRow a:hover {
+  color: var(--tan-bright);
+}
+
+/* ── controls column ────────────────────────────────────────────────────── */
+
+.controls {
+  min-width: 0;
+}
+.group {
+  --ch: var(--chamfer);
+  margin-bottom: 16px;
+}
+.groupInner {
+  --ch: var(--chamfer);
+  background: var(--ink-lift);
+  padding: clamp(20px, 2.4vw, 30px);
+}
+.groupHead {
+  display: flex;
+  align-items: baseline;
+  gap: 13px;
+  margin: 0 0 22px;
+}
+.groupNo {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 0.92rem;
+  color: var(--tan-dim);
+  font-variant-numeric: tabular-nums;
+}
+.groupTitle {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(1.16rem, 1.7vw, 1.4rem);
+  color: var(--fg);
+  margin: 0;
+}
+
+.note {
+  font-size: 0.86rem;
+  color: var(--fg-3);
+  line-height: 1.55;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--edge-soft);
+}
+
+@media (max-width: 1000px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .rail {
+    position: static;
+    order: -1;
+  }
+}
