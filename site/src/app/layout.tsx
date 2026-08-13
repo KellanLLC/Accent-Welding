@@ -21,7 +21,8 @@ export const metadata: Metadata = {
     title: 'Accent Welding · Strength in Steel',
     description:
       'Custom metal railing, fencing, gates and garden boxes. Built right. Built to last. Serving Utah County.',
-    images: [{ url: '/img/ornamental-foothills-1600.jpg', width: 1200, height: 1600 }],
+    // og:image comes from src/app/opengraph-image.png (regenerate with
+    // `node og.mjs`) — the file convention outranks anything listed here.
   },
   robots: { index: true, follow: true },
 };
