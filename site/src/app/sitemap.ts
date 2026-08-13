@@ -1,6 +1,5 @@
 import type { MetadataRoute } from 'next';
-
-const SITE = 'https://accentwelding.com'; // TODO(kelly): confirm final domain
+import { SITE_URL as SITE } from '@/config/site';
 
 const routes = [
   ['', 1],

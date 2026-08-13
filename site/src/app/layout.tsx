@@ -4,13 +4,14 @@ import { display, body } from './fonts';
 import { Nav } from '@/components/Nav';
 import { Footer } from '@/components/Footer';
 import { business } from '@/config/business';
-
-const SITE = 'https://accentwelding.com'; // TODO(kelly): confirm final domain
+import { SITE_URL } from '@/config/site';
 
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: 'Accent Welding · Custom metal railing, fencing & gates in Utah County',
+    // Held under 60 characters so Google doesn't truncate it mid-phrase;
+    // "custom metal" carries on in the description and og title.
+    default: 'Accent Welding · Railing, Fencing & Gates in Utah County',
     template: '%s · Accent Welding',
   },
   description:
@@ -40,7 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     name: business.name,
     description:
       'Custom metal railing, fencing, gates, garden boxes and fabrication, serving Utah County.',
-    url: SITE,
+    url: SITE_URL,
     telephone: business.phone,
     email: business.email,
     founder: { '@type': 'Person', name: business.owner },
