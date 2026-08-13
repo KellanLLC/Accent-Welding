@@ -1,0 +1,61 @@
+{
+	"$schema": "site/node_modules/wrangler/config-schema.json",
+
+	// Must match the Workers project name in the Cloudflare dashboard.
+	"name": "accent-welding",
+
+	// ---------------------------------------------------------------------
+	// Why this file is at the repo root and not in site/
+	//
+	// Cloudflare Workers Builds is configured with root directory `/` and
+	// deploy command `npx wrangler deploy`. That command is run here, so this
+	// is the only place wrangler will look for a config. Rather than depend on
+	// dashboard settings that are invisible to this repo, everything the
+	// deploy needs lives in this file — including the build itself.
+	//
+	// The site is a Next.js app, which cannot run on Workers as-is; the
+	// OpenNext adapter compiles it into a Worker plus a folder of static
+	// assets. `build.command` below does that compile, and it runs before
+	// wrangler uploads anything.
+	// ---------------------------------------------------------------------
+	"build": {
+		"cwd": "site",
+		// The Cloudflare builder does not install site/'s dependencies for us,
+		// because there is no package.json at the repo root for it to detect.
+		// --skipWranglerConfigCheck: the adapter otherwise insists on a
+		// wrangler config inside site/, which would mean a second copy of this
+		// file to keep in sync. A CLI flag is used rather than the equivalent
+		// env var so the command also works in cmd.exe on Windows.
+		"command": "npm ci && npx opennextjs-cloudflare build --skipWranglerConfigCheck"
+	},
+
+	// Both produced by the build above. Paths are relative to this file.
+	"main": "site/.open-next/worker.js",
+	"assets": {
+		"directory": "site/.open-next/assets",
+		"binding": "ASSETS"
+	},
+
+	"compatibility_date": "2026-08-13",
+	// nodejs_compat: the Next.js server needs node builtins.
+	// global_fetch_strictly_public: makes fetch() to our own URLs go back out
+	// through the public internet rather than looping inside the Worker.
+	"compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+
+	// next/image is used for the hero and the full-bleed photo bands, and it
+	// has no optimizer on Workers without this binding.
+	"images": {
+		"binding": "IMAGES"
+	},
+
+	// Quote submissions are written to the log (see
+	// site/src/app/api/quote/route.ts), so the log has to be queryable.
+	"observability": {
+		"enabled": true
+	}
+
+	// No incremental cache is configured on purpose: nothing in the app uses
+	// ISR or `revalidate`, so there is nothing to cache between requests.
+	// If ISR is ever added, follow https://opennext.js.org/cloudflare/caching
+	// and add the R2 bucket + WORKER_SELF_REFERENCE service binding.
+}
