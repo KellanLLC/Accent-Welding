@@ -34,16 +34,6 @@ const ANG_LEG = 2.3; // corner angle, leg length on each face
 const ANG_T = 0.45; // and how far it stands off the sheet
 const OVERHANG = 1.25; // depth of the shadow the rim throws down the face
 
-/*
- * The ground inside the box. It is deliberately NOT derived from the finish:
- * it is soil, the same soil whatever colour the steel is, and a fixed mid tone
- * sits clear of every finish in the range — lighter than a bronze or black
- * interior, darker than a white one. It is also the lightest surface in there
- * on purpose, because a floor faces up into the light while the walls do not.
- */
-const SOIL = '#5a4835';
-const SOIL_LINE = '#2b2118';
-
 const VW = 480;
 const VH = 340;
 /* Gutters reserved for the dimensions, so the steel never has to share space
@@ -168,6 +158,14 @@ export function GardenBoxDrawing({
   const wallY = shade(edge, -0.08);
   const wallX = shade(edge, -0.32);
   const cavity = shade(edge, -0.55);
+  /* The floor of the interior takes the finish too. It used to be a fixed
+     soil brown (the ground showing through the open bottom), but that brown
+     was within a hair of the bronze finish, so every other colour looked like
+     it had been left with a bronze floor. It is the lightest surface in there,
+     because a floor faces up into the light while the walls do not; the hatch
+     over it is a step off the same tone, never a colour of its own. */
+  const floor = shade(edge, 0.06);
+  const floorLine = lum > 0.55 ? shade(edge, -0.16) : shade(edge, 0.18);
 
   const ro = RIM_OUT;
   const ri = Math.min(RIM_IN, Math.min(L, W) / 6);
@@ -246,13 +244,12 @@ export function GardenBoxDrawing({
           <feGaussianBlur stdDeviation="5" />
         </filter>
         {/*
-          Section hatch for the ground inside the box. Its own pattern, not the
-          faint one the rest of the drawing uses: this is the single element
-          that tells you the box has no floor and is open to the soil, so it has
-          to survive a squint.
+          Section hatch for the ground inside the box: the one cue that the box
+          is open-bottomed and sits on soil. Toned off the finish so it tracks
+          the colour picker with everything else.
         */}
         <pattern id={`${uid}-soil`} width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-          <line x1="0" y1="0" x2="0" y2="7" stroke={SOIL_LINE} strokeWidth="2.4" />
+          <line x1="0" y1="0" x2="0" y2="7" stroke={floorLine} strokeWidth="2.4" />
         </pattern>
       </defs>
 
@@ -293,7 +290,7 @@ export function GardenBoxDrawing({
         <polygon points={poly([o0, o1, o2, o3])} fill={cavity} />
         <polygon points={poly([o1, o2, g2, g1])} fill={wallX} />
         <polygon points={poly([o2, o3, g3, g2])} fill={wallY} />
-        <polygon points={poly([g0, g1, g2, g3])} fill={SOIL} />
+        <polygon points={poly([g0, g1, g2, g3])} fill={floor} />
         <polygon points={poly([g0, g1, g2, g3])} fill={`url(#${uid}-soil)`} />
         {/* The line where the walls land on the ground. Without it the soil and
             the shaded inner walls merge into one dark mass and the box reads as
