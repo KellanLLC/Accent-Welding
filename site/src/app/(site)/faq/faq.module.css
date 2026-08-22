@@ -1,0 +1,75 @@
+/* ── Questions: a numbered ledger, every answer visible, nothing to click ── */
+
+.head {
+  padding-block: clamp(46px, 7vw, 92px) clamp(26px, 3vw, 40px);
+}
+.headGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 22px clamp(32px, 5vw, 78px);
+  align-items: end;
+}
+.em {
+  font-style: normal;
+  color: var(--tan);
+}
+.lede {
+  color: var(--fg-2);
+  font-size: clamp(1.02rem, 1.4vw, 1.2rem);
+  max-width: 44ch;
+}
+
+.list {
+  margin: 0;
+  border-top: 1px solid var(--edge);
+}
+.item {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 12px clamp(24px, 4vw, 64px);
+  padding-block: clamp(22px, 3vw, 34px);
+  border-bottom: 1px solid var(--edge-soft);
+}
+.q {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 14px;
+  align-items: baseline;
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(1.2rem, 1.9vw, 1.5rem);
+  line-height: 1.15;
+  color: var(--fg);
+  max-width: 22ch;
+}
+.no {
+  font-size: 0.84rem;
+  color: var(--tan-dim);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+.a {
+  margin: 0;
+  color: var(--fg-2);
+  max-width: 58ch;
+  line-height: 1.62;
+}
+.a a {
+  color: var(--fg);
+  text-decoration: none;
+  border-bottom: 1px solid var(--edge-strong);
+}
+.a a:hover {
+  color: var(--tan-bright);
+  border-bottom-color: var(--tan);
+}
+
+@media (max-width: 860px) {
+  .headGrid,
+  .item {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .a {
+    padding-left: calc(0.84rem * 1.7 + 14px); /* under the question text, clear of the number */
+  }
+}

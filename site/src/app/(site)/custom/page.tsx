@@ -11,6 +11,7 @@ import c from './custom.module.css';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
+  alternates: { canonical: '/custom' },
   title: 'Custom & other pieces for sale',
   description:
     'One-off steel pieces fabricated by Accent Welding and for sale now: fire pits, brackets, stands, signs and whatever else came off the bench. Utah County pickup.',

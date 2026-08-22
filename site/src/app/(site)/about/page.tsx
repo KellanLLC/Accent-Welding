@@ -7,7 +7,8 @@ import a from './about.module.css';
 export const metadata: Metadata = {
   title: 'About',
   description:
-    'Accent Welding is a high quality fabrication shop in Utah County, opened in 2025 by Kelly Staheli. Custom railing, fencing, gates and fabrication.',
+    'Accent Welding is a high quality fabrication shop in Utah County, opened in 2025 and run fifty-fifty by Kelly and Braxton Staheli, father and son. Custom railing, fencing, gates and fabrication.',
+  alternates: { canonical: '/about' },
 };
 
 export default function About() {
@@ -32,10 +33,11 @@ export default function About() {
               <h2 className={`d3 ${a.h}`}>Opened in 2025, and everything since has been custom.</h2>
               <div className={a.prose}>
                 <p>
-                  Kelly Staheli runs the shop and answers the phone. There is no call centre
-                  and no sales team, which is the reason this site prices jobs itself: you
-                  should be able to find out roughly what something costs without waiting for
-                  somebody to get back to you.
+                  Kelly and Braxton Staheli, father and son, own the shop fifty-fifty and
+                  answer the phone themselves. There is no call centre and no sales team,
+                  which is the reason this site prices jobs itself: you should be able to
+                  find out roughly what something costs without waiting for somebody to get
+                  back to you.
                 </p>
                 <p>
                   Everything is fabricated on a steel table in an insulated shop and set on
@@ -71,7 +73,7 @@ export default function About() {
         <div className="wrap">
           <Specs
             items={[
-              { key: 'Owner', val: business.owner, note: 'Answers the phone, quotes the job, and is usually the one welding it.' },
+              { key: 'Owners', val: business.ownersLine, note: 'Father and son, fifty-fifty. One of them answers the phone, quotes the job, and is usually the one welding it.' },
               { key: 'Established', val: String(business.established), note: 'Trading since 2025, serving Utah County and surrounding areas.' },
               { key: 'Kit', val: 'Millermatic 252', note: 'MIG, plus a plasma cutter, in an insulated shop with a fabricated steel bench.' },
               { key: 'Estimates', val: 'Free', note: 'Call or text. Quality work, fair pricing, built to last.' },

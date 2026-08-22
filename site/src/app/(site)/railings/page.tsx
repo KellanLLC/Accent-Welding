@@ -5,6 +5,7 @@ import { RailingDrawing } from '@/drawings/RailingDrawing';
 import { pickets, railingStyles, standardColors, type RailingStyleId } from '@/config/products';
 
 export const metadata: Metadata = {
+  alternates: { canonical: '/railings' },
   title: 'Custom metal railing',
   description:
     'Custom metal railing in five build styles and seven picket patterns, designed to fit your property, your style and your standards. Serving Utah County.',

@@ -8,6 +8,7 @@ import c from './contact.module.css';
 
 export const metadata: Metadata = {
   title: 'Contact',
+  alternates: { canonical: '/contact' },
   description:
     'Call or text Accent Welding for a free estimate on custom metal railing, fencing, gates and garden boxes across Utah County.',
 };
@@ -20,7 +21,7 @@ export default function Contact() {
           <div className={c.headGrid}>
             <div>
               <h1 className="d1">
-                Call or text. <em className={c.em}>Kelly picks up.</em>
+                Call or text. <em className={c.em}>Kelly or Braxton picks up.</em>
               </h1>
               <p className={c.lede}>
                 Free estimates, quality work, fair pricing. If you already know roughly what
@@ -39,7 +40,7 @@ export default function Contact() {
               <span className={c.cardKey}>Call or text</span>
               <span className={c.cardVal}>{business.phone}</span>
               <span className={c.cardNote}>
-                The number on the card and the price list. Best for anything urgent.
+                Kelly. The number on the card and the price list. Best for anything urgent.
               </span>
             </span>
           </a>
@@ -49,7 +50,7 @@ export default function Contact() {
               <span className={c.cardKey}>Second line</span>
               <span className={c.cardVal}>{business.phoneAlt}</span>
               <span className={c.cardNote}>
-                The number on both service flyers. Text a photo of the job here.
+                Braxton. The number on both service flyers. Text a photo of the job here.
               </span>
             </span>
           </a>

@@ -5,6 +5,7 @@ import { GateDrawing } from '@/drawings/GateDrawing';
 import { gateHardware, standardColors } from '@/config/products';
 
 export const metadata: Metadata = {
+  alternates: { canonical: '/gates' },
   title: 'Steel gates',
   description:
     'Walk gates and single or double drive gates, fabricated to match the fence they hang in and hung on posts sized to carry them. Serving Utah County.',

@@ -5,6 +5,7 @@ import { CTA, Lead, Opener, Specs } from '@/components/page/Page';
 import { ReelWall } from '@/components/ReelWall';
 
 export const metadata: Metadata = {
+  alternates: { canonical: '/fabrication' },
   title: 'Custom fabrication',
   description:
     'MIG welding and plasma cutting for one-off steel work, brackets, stands and repairs. If it is steel and you can describe it, send it over. Serving Utah County.',

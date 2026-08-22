@@ -3,6 +3,7 @@ import { CTA, Gallery, Lead, Opener } from '@/components/page/Page';
 import { ReelWall } from '@/components/ReelWall';
 
 export const metadata: Metadata = {
+  alternates: { canonical: '/work' },
   title: 'Work',
   description:
     'Finished railing, fencing and garden box jobs from Accent Welding, photographed on site across Utah County in 2026.',

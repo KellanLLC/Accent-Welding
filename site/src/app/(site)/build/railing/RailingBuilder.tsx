@@ -149,7 +149,7 @@ export function RailingBuilder() {
                 <>
                   A range, not a quote. Railing is priced on what the site actually needs:
                   the grade, the concrete, how many pieces have to be fitted on the spot.
-                  Kelly confirms a firm number on a free site visit.
+                  Kelly or Braxton confirms a firm number on a free site visit.
                 </>
               }
               onQuote={() => setQuoteOpen(true)}

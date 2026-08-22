@@ -114,7 +114,7 @@ export function QuoteDialog({
                 Got it. That spec is with the shop.
               </h2>
               <p className={s.sub}>
-                Kelly reads these himself. Here is what happens next.
+                Kelly and Braxton read these themselves. Here is what happens next.
               </p>
               <ol className={s.doneList}>
                 <li className={s.doneItem}>

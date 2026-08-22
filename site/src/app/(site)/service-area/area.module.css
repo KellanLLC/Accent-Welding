@@ -1,0 +1,191 @@
+/* ── Service area: the hub and the town pages ──────────────────────────── */
+
+.head {
+  padding-block: clamp(46px, 7vw, 92px) clamp(26px, 3vw, 40px);
+}
+.headGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 22px clamp(32px, 5vw, 78px);
+  align-items: end;
+}
+.em {
+  font-style: normal;
+  color: var(--tan);
+}
+.lede {
+  color: var(--fg-2);
+  font-size: clamp(1.02rem, 1.4vw, 1.2rem);
+  max-width: 44ch;
+}
+.crumb {
+  display: inline-block;
+  color: var(--fg-3);
+  text-decoration: none;
+  font-size: 0.9rem;
+  margin-bottom: 14px;
+}
+.crumb:hover {
+  color: var(--tan-bright);
+}
+
+/* The hub: towns as a ruled list, grouped by how far they are, each a plate
+   link. The minutes sit in their own tabular column so the list reads like
+   the shop's own run sheet. */
+.groups {
+  display: grid;
+  gap: clamp(28px, 4vw, 48px);
+}
+.groupTitle {
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  margin: 0 0 14px;
+}
+.towns {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 12px;
+}
+.town {
+  --ch: var(--chamfer-sm);
+  display: block;
+  text-decoration: none;
+  height: 100%;
+  transition: background 190ms var(--ease);
+}
+.town:hover {
+  background: var(--tan);
+}
+.townInner {
+  --ch: var(--chamfer-sm);
+  background: var(--ink-lift);
+  height: 100%;
+  padding: 16px 18px 17px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  gap: 4px 14px;
+  transition: background 190ms var(--ease);
+}
+.town:hover .townInner {
+  background: #332d26;
+}
+.townName {
+  grid-column: 1;
+  grid-row: 1;
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 700;
+  font-size: 1.12rem;
+  color: var(--fg);
+}
+.townMin {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: start;
+  color: var(--tan-dim);
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  padding-top: 3px;
+}
+.townLine {
+  grid-column: 1;
+  grid-row: 2;
+  color: var(--fg-3);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+/* A town page: the two paragraphs beside the three things built there. */
+.two {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: clamp(28px, 4vw, 64px);
+  align-items: start;
+}
+.prose {
+  display: grid;
+  gap: 16px;
+  color: var(--fg-2);
+  max-width: 58ch;
+}
+.prose h2 {
+  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+  line-height: 1.1;
+  color: var(--fg);
+  max-width: 20ch;
+  margin-bottom: 4px;
+}
+.focus {
+  display: grid;
+  gap: 12px;
+}
+.focusItem {
+  --ch: var(--chamfer);
+  text-decoration: none;
+  display: block;
+  transition: background 190ms var(--ease);
+}
+.focusItem:hover {
+  background: var(--edge-strong);
+}
+.focusInner {
+  --ch: var(--chamfer);
+  background: var(--ink-lift);
+  padding: 18px 20px 19px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px 16px;
+  align-items: center;
+  transition: background 190ms var(--ease);
+}
+.focusItem:hover .focusInner {
+  background: #2f2b29;
+}
+.focusName {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 700;
+  font-size: 1.18rem;
+  color: var(--fg);
+}
+.focusLine {
+  grid-column: 1;
+  color: var(--fg-3);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.focusInner :global(.arrow) {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  color: var(--tan);
+  transition: transform 280ms var(--ease-out);
+}
+.focusItem:hover :global(.arrow) {
+  transform: translate(3px, -3px);
+}
+
+.others {
+  margin-top: clamp(24px, 3vw, 36px);
+  color: var(--fg-3);
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+.others a {
+  color: var(--fg-2);
+  text-decoration: none;
+  border-bottom: 1px solid var(--edge);
+}
+.others a:hover {
+  color: var(--tan-bright);
+  border-bottom-color: var(--tan);
+}
+
+@media (max-width: 860px) {
+  .headGrid,
+  .two {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

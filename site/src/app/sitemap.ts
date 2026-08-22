@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next';
+import { areas } from '@/config/areas';
 import { SITE_URL as SITE } from '@/config/site';
 
 const routes = [
@@ -17,14 +18,23 @@ const routes = [
   ['/work', 0.6],
   ['/about', 0.5],
   ['/contact', 0.6],
+  ['/service-area', 0.7],
+  ['/faq', 0.6],
 ] as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const lastModified = new Date('2026-08-11');
-  return routes.map(([path, priority]) => ({
-    url: `${SITE}${path}`,
+  const lastModified = new Date('2026-08-21');
+  const fixed: MetadataRoute.Sitemap = routes.map(([path, priority]) => ({
+    url: SITE + path,
     lastModified,
     changeFrequency: 'monthly',
     priority: priority as number,
   }));
+  const towns: MetadataRoute.Sitemap = areas.map((t) => ({
+    url: SITE + '/service-area/' + t.slug,
+    lastModified,
+    changeFrequency: 'monthly',
+    priority: 0.6,
+  }));
+  return [...fixed, ...towns];
 }

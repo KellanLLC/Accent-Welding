@@ -11,7 +11,16 @@ export const business = {
   name: 'Accent Welding',
   legalName: 'Accent Welding',
   established: 2025,
+  /**
+   * Father and son, fifty-fifty. Kelly is on the 801 line (the business card
+   * and the price list); Braxton is on the 385 (both flyers, and the number
+   * the panel texts). `owner` is kept as the first name for anything that
+   * needs a single person.
+   */
   owner: 'Kelly Staheli',
+  owners: ['Kelly Staheli', 'Braxton Staheli'],
+  ownersLine: 'Kelly & Braxton Staheli',
+  ownersTitle: 'Owners',
   ownerTitle: 'Owner',
 
   /**

@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
@@ -12,6 +13,8 @@ import { business } from '@/config/business';
 import s from './page.module.css';
 
 const bronze = standardColors.find((c) => c.id === 'bronze')!;
+
+export const metadata: Metadata = { alternates: { canonical: '/' } };
 
 /* Rendered per request rather than at build, so the for-sale strip can read
    what is listed right now. The strip renders nothing when nothing is listed. */
@@ -256,8 +259,8 @@ export default function Home() {
               Free estimates. <em>Fair pricing.</em>
             </h2>
             <p className={s.closeCopy}>
-              Serving {business.serviceArea}. Call or text. Kelly answers the phone
-              himself.
+              Serving {business.serviceArea}. Call or text. Kelly or Braxton answers the
+              phone, not a call centre.
             </p>
           </div>
           <div className={s.closeActions}>

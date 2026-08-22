@@ -63,6 +63,8 @@ export function Footer() {
               <h2 className={s.colHead}>The shop</h2>
               <Link href="/work">Work</Link>
               <Link href="/about">About</Link>
+              <Link href="/service-area">Where we work</Link>
+              <Link href="/faq">Questions</Link>
               <Link href="/contact">Contact</Link>
             </div>
           </div>
@@ -81,7 +83,7 @@ export function Footer() {
 
         <div className={s.colophon}>
           <span>
-            © {year} Accent Welding. {business.owner}, {business.ownerTitle}.
+            © {year} Accent Welding. {business.ownersLine}, {business.ownersTitle}.
           </span>
           <span>
             {business.licensed && business.licenceNumber

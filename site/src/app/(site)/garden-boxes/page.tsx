@@ -7,6 +7,7 @@ import { boxFootprints, boxHeights, boxPrices, money } from '@/config/pricing';
 import g from './boxes.module.css';
 
 export const metadata: Metadata = {
+  alternates: { canonical: '/garden-boxes' },
   title: 'Steel garden boxes',
   description:
     'Welded steel raised garden beds in fifteen sizes, bare steel or powder coated white, black or bronze. Published prices from $420. Serving Utah County.',

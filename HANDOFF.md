@@ -12,7 +12,9 @@ npm run build
 
 ---
 
-## 1. The things Kelly has to answer before this goes live
+## 1. The things the owners have to answer before this goes live
+
+(Two owners, fifty-fifty: Kelly Staheli on the 801 line and his son Braxton on the 385. The copy across the site names both.)
 
 These are the only blockers. Every one of them is wired to a single constant, so
 answering it is a one-line change.

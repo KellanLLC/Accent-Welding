@@ -151,7 +151,7 @@ export function FenceBuilder() {
               disclaimer={
                 <>
                   A range, not a quote. Post spacing, rock, existing footings and access all
-                  move the number. Kelly walks the line and confirms a firm price, free.
+                  move the number. Kelly or Braxton walks the line and confirms a firm price, free.
                 </>
               }
               onQuote={() => setQuoteOpen(true)}

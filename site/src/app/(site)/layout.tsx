@@ -20,7 +20,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
     url: SITE_URL,
     telephone: business.phone,
     email: business.email,
-    founder: { '@type': 'Person', name: business.owner },
+    founder: business.owners.map((name) => ({ '@type': 'Person', name })),
     foundingDate: String(business.established),
     slogan: 'Strength in Steel',
     address: {

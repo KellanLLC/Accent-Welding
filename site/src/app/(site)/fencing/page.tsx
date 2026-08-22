@@ -5,6 +5,7 @@ import { FenceDrawing } from '@/drawings/FenceDrawing';
 import { fenceTypes, standardColors, woodGrains, type FenceTypeId } from '@/config/products';
 
 export const metadata: Metadata = {
+  alternates: { canonical: '/fencing' },
   title: 'Custom metal fencing',
   description:
     'Metal privacy fencing with a wood-grain finish, horizontal slat, ranch and pasture, continuous pipe and ornamental iron. No warping, no rot. Serving Utah County.',

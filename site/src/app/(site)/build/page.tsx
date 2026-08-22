@@ -11,6 +11,7 @@ import { business } from '@/config/business';
 import s from './Hub.module.css';
 
 export const metadata: Metadata = {
+  alternates: { canonical: '/build' },
   title: 'Build & price your job',
   description:
     'Configure railing, fencing, gates or a garden box to your own dimensions, watch it drawn to scale, and get a price before anyone comes out.',
