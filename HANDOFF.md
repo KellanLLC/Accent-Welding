@@ -25,7 +25,7 @@ answering it is a one-line change.
 | 4 | **Licence number, liability, workers' comp?** | `src/config/business.ts` → `licensed`, `licenceNumber` | Footer says "Fabricated in Utah County, Utah". Set `licensed: true` and it renders the licence line instead. This is the strongest trust signal available to a shop with no reviews yet. |
 | 5 | **Real hours?** | `src/config/business.ts` → `hoursPublished` | No hours claim is made. The site says "call or text". |
 | 6 | **Real lead times?** | `src/config/pricing.ts` → `leadTimeWeeks` | 1–2 weeks boxes, 2–3 railing/gates, 3–4 fence. Currently a guess. |
-| 7 | **Which domain?** accentwelding.com is already taken and serving someone's IONOS site-builder page (published Jun 2024) — check whether that's an unrelated shop with the same name before trying to buy it. | `src/config/site.ts` → `SITE_URL` | The site lives at accent-welding.bkthueson.workers.dev and every absolute link (share-preview card, sitemap, schema) points there, so previews work today. When a real domain is attached to the Worker, change that one constant. |
+| 7 | ~~Which domain?~~ **Settled:** the site lives at **accentweldingut.com** (custom domain on the Worker since 21 Aug 2026; the workers.dev address is disabled). | `src/config/site.ts` → `SITE_URL` | Every absolute link (share card, sitemap, schema, the review links in texts, the panel deep link) points at accentweldingut.com. `www.accentweldingut.com` is not attached yet; add it as a second custom domain on the Worker if people type it. |
 
 ## 2. Pricing — read this before you touch a number
 
