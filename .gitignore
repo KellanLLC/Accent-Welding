@@ -2,3 +2,4 @@
 # lives here. The app's own ignores are in site/.gitignore.
 .wrangler
 node_modules
+.dev.vars

@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
+import { Arrow } from '@/components/Arrow';
 import { CTA, Lead, Opener, Specs } from '@/components/page/Page';
 import { ReelWall } from '@/components/ReelWall';
 
@@ -43,6 +45,19 @@ export default function Fabrication() {
       <section className="section">
         <div className="wrap">
           <Lead
+            title="Some of it is already built, and for sale."
+            copy="One-off pieces that came off the bench between jobs are listed on the site as they are finished, with photos and a price. First come, first served."
+          />
+          <Link href="/custom" className="linkAction">
+            See what is for sale right now
+            <Arrow />
+          </Link>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="wrap">
+          <Lead
             title="Work in progress, filmed on the bench."
             copy="These are the shop's own clips, posted as the work happened."
           />
@@ -57,7 +72,7 @@ export default function Fabrication() {
           </>
         }
         copy="If it is not something the shop should be making, you will hear that too. Free either way."
-        href="/contact"
+        href="/contact#form"
         label="Send it over"
       />
     </>

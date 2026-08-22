@@ -1,20 +1,17 @@
-import { NextResponse } from 'next/server';
-import { appendFile, mkdir } from 'node:fs/promises';
-import path from 'node:path';
+import { afterResponse } from '@/lib/server/env';
+import { maybeSweep } from '@/lib/server/followups';
+import { json, readJson, sameOrigin, str } from '@/lib/server/http';
+import { normalisePhone } from '@/lib/server/phone';
+import { floodGuardTripped, insertQuote, notifyOwnerOfQuote } from '@/lib/server/quotes';
+
+export const dynamic = 'force-dynamic';
 
 /**
- * Quote intake.
- *
- * Right now every submission is validated and appended to `.data/quotes.jsonl`
- * so nothing is ever lost, and the payload is logged. That means the flow is
- * genuinely functional today with no third-party account.
- *
- * TODO(launch): add an email provider so Kelly is notified without checking a
- * file. Drop the key in `.env.local` and un-comment the block below — the rest
- * of the route needs no changes.
- *
- *   RESEND_API_KEY=…
- *   QUOTE_TO=accentwelding25@gmail.com
+ * Quote intake, for the four builders, the contact form, and "ask about this
+ * piece" on a listed item. Every submission is written to the `quotes` table
+ * in D1 and shows up in the panel at /admin the moment it lands; the owner is
+ * texted after the response has gone out, so a GoHighLevel outage can never
+ * fail a customer's submission.
  */
 
 type Payload = {
@@ -26,85 +23,57 @@ type Payload = {
   email?: string;
   where?: string;
   notes?: string;
+  source?: string;
+  website?: string; // honeypot: people never see it, bots fill everything
 };
 
-const str = (v: unknown, max: number) =>
-  typeof v === 'string' ? v.trim().slice(0, max) : '';
-
 export async function POST(req: Request) {
-  let body: Payload;
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ ok: false, error: 'Bad JSON' }, { status: 400 });
-  }
+  if (!sameOrigin(req)) return json({ ok: false, error: 'Origin not allowed.' }, 403);
+
+  const body = await readJson<Payload>(req);
+  if (!body) return json({ ok: false, error: 'Bad JSON' }, 400);
+
+  if (str(body.website, 50)) return json({ ok: true });
 
   const name = str(body.name, 120);
-  const phone = str(body.phone, 40);
-  const where = str(body.where, 120);
+  const phoneRaw = str(body.phone, 40);
+  const email = str(body.email, 160);
+  const town = str(body.where, 120);
 
-  if (!name || !phone || !where) {
-    return NextResponse.json(
-      { ok: false, error: 'Name, phone and town are required.' },
-      { status: 422 },
-    );
+  if (!name) return json({ ok: false, error: 'Please enter your name.' }, 422);
+  const phone = normalisePhone(phoneRaw);
+  if (!phone) return json({ ok: false, error: 'Please enter a valid phone number.' }, 422);
+  if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    return json({ ok: false, error: 'That email address does not look right.' }, 422);
   }
 
-  const record = {
-    at: new Date().toISOString(),
-    product: str(body.product, 120),
-    price: str(body.price, 200),
+  const ip = req.headers.get('CF-Connecting-IP') || '';
+  if (await floodGuardTripped(ip)) {
+    return json({ ok: false, error: 'Too many requests. Please call us instead.' }, 429);
+  }
+
+  const source: 'builder' | 'contact' | 'piece' =
+    body.source === 'contact' || body.source === 'piece' ? body.source : 'builder';
+
+  const inserted = await insertQuote({
+    product: str(body.product, 120) || 'Enquiry',
     spec: Array.isArray(body.spec)
-      ? body.spec.slice(0, 40).map((r) => ({
-          key: str(r?.key, 80),
-          value: str(r?.value, 200),
-        }))
+      ? body.spec.slice(0, 40).map((r) => ({ key: str(r?.key, 80), value: str(r?.value, 200) }))
       : [],
+    price: str(body.price, 200),
     name,
     phone,
-    email: str(body.email, 160),
-    where,
-    notes: str(body.notes, 2000),
-  };
+    phoneRaw,
+    email,
+    town,
+    notes: str(body.notes, 4000),
+    source,
+    ip,
+    userAgent: (req.headers.get('User-Agent') || '').slice(0, 400),
+  });
 
-  try {
-    const dir = path.join(process.cwd(), '.data');
-    await mkdir(dir, { recursive: true });
-    await appendFile(path.join(dir, 'quotes.jsonl'), JSON.stringify(record) + '\n', 'utf8');
-  } catch (err) {
-    // Never lose the lead to a disk problem — it is still in the server log.
-    console.error('[quote] could not persist to disk', err);
-  }
+  if (inserted) notifyOwnerOfQuote(inserted.id, name, phoneRaw, str(body.product, 120) || 'Enquiry');
+  afterResponse(maybeSweep(), 'sweep');
 
-  console.log('[quote]', JSON.stringify(record));
-
-  // if (process.env.RESEND_API_KEY) {
-  //   await fetch('https://api.resend.com/emails', {
-  //     method: 'POST',
-  //     headers: {
-  //       authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-  //       'content-type': 'application/json',
-  //     },
-  //     body: JSON.stringify({
-  //       from: 'Accent Welding site <quotes@accentwelding.com>',
-  //       to: process.env.QUOTE_TO,
-  //       reply_to: record.email || undefined,
-  //       subject: `${record.product} — ${record.name}, ${record.where}`,
-  //       text: [
-  //         `${record.product}`,
-  //         record.price,
-  //         '',
-  //         ...record.spec.map((r) => `${r.key}: ${r.value}`),
-  //         '',
-  //         `Name:  ${record.name}`,
-  //         `Phone: ${record.phone}`,
-  //         `Email: ${record.email || '—'}`,
-  //         `Where: ${record.where}`,
-  //         `Notes: ${record.notes || '—'}`,
-  //       ].join('\n'),
-  //     }),
-  //   });
-  // }
-
-  return NextResponse.json({ ok: true });
+  return json({ ok: true, id: inserted?.id });
 }

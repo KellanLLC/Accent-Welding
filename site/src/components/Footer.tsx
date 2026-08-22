@@ -50,6 +50,7 @@ export function Footer() {
               <Link href="/gates">Gates</Link>
               <Link href="/garden-boxes">Garden boxes</Link>
               <Link href="/fabrication">Custom fabrication</Link>
+              <Link href="/custom">Pieces for sale</Link>
             </div>
             <div className={s.col}>
               <h2 className={s.colHead}>Price it yourself</h2>

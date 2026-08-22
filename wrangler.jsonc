@@ -48,8 +48,53 @@
 		"binding": "IMAGES"
 	},
 
-	// Quote submissions are written to the log (see
-	// site/src/app/api/quote/route.ts), so the log has to be queryable.
+	// ---------------------------------------------------------------------
+	// The shop panel (/admin) and everything behind it.
+	//
+	// DB    — quote requests, review requests, the settings bag, and the
+	//         pieces listed for sale. Schema in db/schema.sql; apply with
+	//           npx wrangler d1 execute accent-welding --remote --file=db/schema.sql
+	// MEDIA — the photo bytes for listed pieces. R2 would be the natural home
+	//         but R2 is not enabled on this account (it needs a dashboard step
+	//         and a card on file), and KV needs neither. A photo is a few
+	//         hundred KB; KV takes values up to 25 MB and serves them from the
+	//         edge cache. Swapping to R2 later is a one-file change in
+	//         site/src/lib/server/media.ts.
+	//
+	// Secrets, set once with `npx wrangler secret put <NAME>` from this
+	// directory and never written to this file:
+	//   ADMIN_PASSWORD   what you type to open /admin
+	//   SESSION_SECRET   any long random string; change it to sign everyone out
+	//   GHL_WEBHOOK_URL  the GoHighLevel inbound webhook that sends the texts
+	// ---------------------------------------------------------------------
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "accent-welding",
+			"database_id": "2900ade3-ebed-470b-8a9a-5fce46c37e4d"
+		}
+	],
+	"kv_namespaces": [
+		{
+			"binding": "MEDIA",
+			"id": "5274a4a82b64491e9239e7641de5700b"
+		}
+	],
+	"vars": {
+		// Goes out in every GoHighLevel payload as the `company` field.
+		"COMPANY_NAME": "Accent Welding"
+	},
+
+	// Review follow-ups would normally run from a cron trigger, but this
+	// account is at Cloudflare's limit of 5 cron triggers (API error 10072), so
+	// registering one here fails the deploy. The app instead sweeps off
+	// ordinary traffic — see maybeSweep in site/src/lib/server/followups.ts —
+	// and the panel has a "Run now" button. Free a slot on another Worker and
+	// this becomes the better option:
+	//   "triggers": { "crons": ["*/15 * * * *"] },
+
+	// Quote submissions and every text that is sent are logged, so the log has
+	// to be queryable.
 	"observability": {
 		"enabled": true
 	}

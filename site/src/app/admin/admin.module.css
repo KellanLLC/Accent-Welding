@@ -1,0 +1,950 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   The shop panel.
+
+   The artifact it is built around is the job ticket: every request is a
+   numbered ticket on the board, with a small steel tag cut on the site's
+   chamfer that reads its status at a glance. Type, colour and silhouette are
+   the public site's own, so the two read as one shop. Mobile first: this is
+   opened from a text on a phone far more often than from a desk.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.shell {
+  position: relative;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 18px 40px;
+  /* One directional rake of warm light from the top left, with falloff. The
+     page grain from globals.css sits under it. Nothing else is decorated. */
+  background: linear-gradient(160deg, rgba(213, 186, 140, 0.055) 0%, rgba(213, 186, 140, 0.02) 28%, rgba(213, 186, 140, 0) 52%);
+  min-height: 100svh;
+}
+@media (min-width: 720px) {
+  .shell {
+    padding-inline: 32px;
+  }
+}
+
+/* ── Header ────────────────────────────────────────────────────────────── */
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 18px 0 14px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+}
+.word {
+  display: block;
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 700;
+  font-size: 1.04rem;
+  letter-spacing: 0.012em;
+  line-height: 1;
+  color: var(--fg);
+  white-space: nowrap;
+}
+.sub {
+  display: block;
+  font-size: 0.56rem;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  color: var(--tan);
+  margin-top: 4px;
+}
+.topActions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+}
+.ghost {
+  background: none;
+  border: 0;
+  color: var(--fg-3);
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 12px 8px; /* 44px tall: this gets used with a thumb */
+  cursor: pointer;
+  transition: color 160ms var(--ease);
+}
+.ghost:hover {
+  color: var(--fg);
+}
+
+/* ── Tabs ──────────────────────────────────────────────────────────────────
+   Real controls: they switch views. The active one is a raised plate on the
+   rule, the way a tab on a ticket folder sits proud of the others; the rest
+   are plain type. Nothing moves in, nothing underlines itself. */
+
+.tabs {
+  display: flex;
+  gap: 2px;
+  border-bottom: 1px solid var(--edge);
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin-inline: -18px;
+  padding-inline: 18px;
+}
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+/* On a phone all four tabs share the width evenly, so none of them is ever
+   cut off at the edge or hidden behind a scroll. */
+@media (max-width: 479px) {
+  .tabs {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0;
+  }
+  .tab {
+    justify-content: center;
+    padding-inline: 4px;
+    font-size: 0.86rem;
+    gap: 5px;
+  }
+}
+@media (min-width: 720px) {
+  .tabs {
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+}
+.tab {
+  --ch: 7px;
+  flex: none;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  background: none;
+  border: 0;
+  padding: 13px 14px 14px;
+  margin-bottom: -1px;
+  font-size: 0.94rem;
+  font-weight: 500;
+  color: var(--fg-3);
+  cursor: pointer;
+  transition: color 160ms var(--ease);
+  clip-path: polygon(var(--ch) 0, 100% 0, 100% 100%, 0 100%, 0 var(--ch));
+}
+.tab:hover {
+  color: var(--fg-2);
+}
+.tabOn {
+  color: var(--fg);
+  font-weight: 600;
+  background: var(--ink-lift);
+  box-shadow: inset 0 1px 0 var(--lip);
+}
+.count {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--tan-dim);
+  font-variant-numeric: tabular-nums;
+}
+.tabOn .count {
+  color: var(--tan);
+}
+
+.view {
+  padding-top: 24px;
+}
+.view[hidden] {
+  display: none;
+}
+
+.viewHead {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px 24px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.h1 {
+  font-size: clamp(1.45rem, 2.6vw, 1.85rem);
+  line-height: 1.05;
+  margin: 0;
+}
+.viewCopy {
+  margin-top: 8px;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--fg-3);
+  max-width: 52ch;
+}
+.h2 {
+  font-size: 1.12rem;
+  line-height: 1.1;
+  margin: 0 0 8px;
+}
+.hint {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--fg-3);
+  max-width: 56ch;
+  margin: 0 0 18px;
+}
+.hint code,
+.panelInner code {
+  font-family: inherit;
+  color: var(--tan);
+  font-weight: 600;
+}
+
+.foot {
+  margin: 56px 0 0;
+  font-size: 0.8rem;
+  color: var(--fg-4);
+}
+
+/* ── The board ─────────────────────────────────────────────────────────── */
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.row {
+  border-top: 1px solid var(--edge-soft);
+}
+.row:last-child {
+  border-bottom: 1px solid var(--edge-soft);
+}
+
+/* One grid template for every row, so the tag, the name, the date land on the
+   same axis in all of them regardless of how long any single value runs. */
+.rowHead {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) 16px;
+  grid-template-areas:
+    'lead main chev'
+    'lead meta chev';
+  align-items: center;
+  gap: 3px 12px;
+  width: 100%;
+  padding: 14px 2px 14px 0;
+  background: none;
+  border: 0;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+@media (min-width: 640px) {
+  .rowHead {
+    grid-template-columns: 58px minmax(0, 1fr) auto 16px;
+    grid-template-areas: 'lead main meta chev';
+    gap: 0 16px;
+  }
+}
+.rowHead:hover .rowName {
+  color: var(--fg);
+}
+.rowLead {
+  grid-area: lead;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.rowNo {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--fg-3);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+.rowMain {
+  grid-area: main;
+  min-width: 0;
+}
+.rowName {
+  display: block;
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--fg-2);
+  transition: color 160ms var(--ease);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.rowSub {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.86rem;
+  color: var(--fg-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.rowMeta {
+  grid-area: meta;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
+  color: var(--fg-3);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+@media (min-width: 640px) {
+  .rowMeta {
+    justify-content: flex-end;
+  }
+}
+.rowDate {
+  color: var(--fg-4);
+}
+.chev {
+  grid-area: chev;
+  color: var(--fg-4);
+  transition: transform 260ms var(--ease-out), color 160ms var(--ease);
+  justify-self: center;
+}
+.rowOpen .chev,
+.rowHead:hover .chev {
+  color: var(--fg-2);
+}
+
+/* Disclosure. grid-template-rows animates to content height with no measured
+   guess, and the content stays in the DOM throughout. */
+.rowBody {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 360ms var(--ease);
+}
+.rowOpen .rowBody {
+  grid-template-rows: 1fr;
+}
+.rowBodyInner {
+  overflow: hidden;
+  min-height: 0;
+}
+.rowBodyInner > * {
+  padding: 6px 0 26px;
+}
+@media (min-width: 640px) {
+  .rowBodyInner > * {
+    padding-left: 74px; /* under the name, clear of the lead column */
+  }
+}
+
+.cols {
+  display: grid;
+  gap: 26px;
+}
+@media (min-width: 860px) {
+  .cols {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 40px;
+  }
+}
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+/* Full-width on a phone, where the thumb wants it; its own width on a desk. */
+@media (min-width: 860px) {
+  .col > .action {
+    align-self: flex-start;
+  }
+}
+.grow {
+  flex: 1;
+  min-height: 2px;
+}
+
+/* The title block: the drawing's stamp, where a spec belongs. */
+.block {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+  gap: 1px;
+  background: var(--edge);
+  margin: 0;
+}
+.blockCell {
+  background: var(--ink-deep);
+  padding: 9px 12px 10px;
+  min-width: 0;
+}
+.blockCell dt {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--fg-4);
+  margin: 0 0 4px;
+}
+.blockCell dd {
+  margin: 0;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--fg);
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+.blockPrice dd {
+  color: var(--tan);
+}
+
+.quoteText {
+  font-size: 0.94rem;
+  line-height: 1.6;
+  color: var(--fg-2);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin: 0;
+}
+.metaLines {
+  display: grid;
+  gap: 4px;
+  font-size: 0.87rem;
+  line-height: 1.5;
+  color: var(--fg-3);
+}
+.metaLines a,
+.metaLine a {
+  color: var(--fg-2);
+  text-decoration: none;
+  border-bottom: 1px solid var(--edge);
+  width: fit-content;
+}
+.metaLines a:hover,
+.metaLine a:hover {
+  color: var(--fg);
+  border-bottom-color: var(--tan);
+}
+.metaLine {
+  font-size: 0.87rem;
+  color: var(--fg-3);
+  margin: 0;
+}
+.fail {
+  color: #d89a72;
+}
+
+/* ── The tag ───────────────────────────────────────────────────────────── */
+.tag {
+  display: block;
+  flex: none;
+  overflow: visible;
+}
+.tagEdge {
+  stroke: var(--fg-4);
+  stroke-width: 1;
+  transition: stroke 200ms linear;
+}
+.tagFill {
+  fill: var(--tan-dim);
+  transition: y 300ms var(--ease), height 300ms var(--ease);
+}
+.tag_new .tagFill {
+  fill: var(--tan);
+}
+.tag_new .tagEdge {
+  stroke: var(--tan);
+}
+.tag_contacted .tagEdge,
+.tag_scheduled .tagEdge {
+  stroke: var(--tan-dim);
+}
+
+/* Status control: four tags in a row, the pressed one raised. Two by two on a
+   phone, so the row never breaks into three-and-one. */
+.statuses {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+@media (min-width: 480px) {
+  .statuses {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+.statusOpt {
+  --ch: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--ink-lift);
+  border: 1px solid transparent;
+  padding: 9px 13px 9px 11px;
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--fg-3);
+  cursor: pointer;
+  clip-path: polygon(var(--ch) 0, 100% 0, 100% calc(100% - var(--ch)), calc(100% - var(--ch)) 100%, 0 100%, 0 var(--ch));
+  transition: background 160ms var(--ease), color 160ms var(--ease);
+}
+.statusOpt:hover {
+  color: var(--fg-2);
+  background: var(--panel-2);
+}
+.statusOn {
+  background: var(--panel-2);
+  color: var(--fg);
+  box-shadow: inset 0 1px 0 var(--lip);
+}
+
+/* ── Fields ────────────────────────────────────────────────────────────── */
+.label {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-4);
+  margin-bottom: 7px;
+}
+.labelGap {
+  margin-top: 8px;
+}
+.input,
+.textarea {
+  width: 100%;
+  background: var(--panel);
+  border: 1px solid var(--edge);
+  padding: 12px 14px;
+  font-size: 16px; /* never under 16px on an input: iOS zooms the page otherwise */
+  line-height: 1.5;
+  color: var(--fg);
+  font-family: inherit;
+  transition: border-color 160ms var(--ease);
+}
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--tan);
+}
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--fg-4);
+}
+.textarea {
+  resize: vertical;
+  min-height: 84px;
+  display: block;
+}
+.noteBox {
+  min-height: 66px;
+}
+.fieldNote {
+  margin-top: 7px;
+  font-size: 0.82rem;
+  color: var(--fg-4);
+  line-height: 1.5;
+}
+.narrow {
+  max-width: 360px;
+}
+.twoUp {
+  display: grid;
+  gap: 12px;
+}
+@media (min-width: 560px) {
+  .twoUp {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+.preview {
+  margin-top: 10px;
+  font-size: 0.84rem;
+  color: var(--fg-3);
+  line-height: 1.5;
+}
+
+.msg {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: var(--fg-3);
+}
+.msgErr {
+  color: #d89a72;
+}
+.actionRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+/* The action button is the site's own .btn; this only adds the failed state. */
+.action {
+  min-height: 48px;
+}
+.actionFailed {
+  background: var(--panel-2);
+  color: #d89a72;
+  box-shadow: inset 0 0 0 1px rgba(216, 154, 114, 0.45);
+}
+
+/* ── The switch ────────────────────────────────────────────────────────── */
+.switch {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: none;
+  border: 0;
+  padding: 4px 0;
+  margin-top: 18px;
+  cursor: pointer;
+  color: inherit;
+  text-align: left;
+  font: inherit;
+}
+.switchTrack {
+  --ch: 5px;
+  position: relative;
+  flex: none;
+  width: 46px;
+  height: 24px;
+  background: var(--ink-deep);
+  box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.4), inset 0 0 0 1px var(--edge);
+  clip-path: polygon(var(--ch) 0, 100% 0, 100% calc(100% - var(--ch)), calc(100% - var(--ch)) 100%, 0 100%, 0 var(--ch));
+  transition: background 200ms var(--ease);
+}
+.switchKnob {
+  --ch: 4px;
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 18px;
+  background: var(--fg-4);
+  clip-path: polygon(var(--ch) 0, 100% 0, 100% calc(100% - var(--ch)), calc(100% - var(--ch)) 100%, 0 100%, 0 var(--ch));
+  transition: transform 220ms var(--ease-out), background 200ms var(--ease);
+}
+.switchOn .switchTrack {
+  background: var(--tan-deep);
+}
+.switchOn .switchKnob {
+  transform: translateX(20px);
+  background: var(--tan);
+}
+.switchText {
+  display: grid;
+  gap: 3px;
+}
+.switchLabel {
+  font-size: 0.94rem;
+  font-weight: 600;
+  color: var(--fg);
+}
+.switchState {
+  font-size: 0.84rem;
+  color: var(--fg-3);
+}
+
+/* ── Panels ────────────────────────────────────────────────────────────── */
+.panel {
+  --ch: var(--chamfer);
+  margin-bottom: 16px;
+}
+.panelInner {
+  --ch: var(--chamfer);
+  background: var(--ink-lift);
+  padding: 20px 18px 22px;
+}
+@media (min-width: 720px) {
+  .panelInner {
+    padding: 26px 28px 28px;
+  }
+}
+.panelBody {
+  display: grid;
+  gap: 16px;
+}
+.settings {
+  display: grid;
+}
+.saveBar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 6px 0 26px;
+}
+
+/* A rung of the follow-up ladder: its number, when it fires, what it says. */
+.rung {
+  display: grid;
+  gap: 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--edge-soft);
+}
+.rung:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+}
+.rungHead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.rungNo {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 700;
+  font-size: 0.96rem;
+  color: var(--fg-3);
+  font-variant-numeric: tabular-nums;
+  min-width: 22px;
+}
+.rungWhen {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.86rem;
+  color: var(--fg-3);
+}
+.hours {
+  width: 74px;
+  text-align: center;
+  padding-inline: 8px;
+}
+.rungAt {
+  margin-left: auto;
+  font-size: 0.82rem;
+  color: var(--fg-4);
+}
+.pair {
+  display: grid;
+  gap: 8px;
+}
+
+/* ── Pieces ────────────────────────────────────────────────────────────── */
+.pieceThumb {
+  --ch: 5px;
+  display: block;
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  background: var(--ink-deep);
+  clip-path: polygon(var(--ch) 0, 100% 0, 100% calc(100% - var(--ch)), calc(100% - var(--ch)) 100%, 0 100%, 0 var(--ch));
+}
+.pieceThumbEmpty {
+  box-shadow: inset 0 0 0 1px var(--edge);
+}
+.editor {
+  display: grid;
+  gap: 4px;
+}
+.editorFields {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+@media (min-width: 640px) {
+  .editorFields {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.6fr);
+  }
+  .editorWide {
+    grid-column: 1 / -1;
+  }
+}
+.photos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.photo {
+  --ch: 8px;
+  margin: 0;
+  background: var(--ink-deep);
+  clip-path: polygon(var(--ch) 0, 100% 0, 100% calc(100% - var(--ch)), calc(100% - var(--ch)) 100%, 0 100%, 0 var(--ch));
+}
+.photoImg {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  display: block;
+}
+.photoActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px 7px;
+  font-size: 0.76rem;
+}
+.photoCover {
+  color: var(--tan);
+  font-weight: 600;
+}
+.photoBtn {
+  background: none;
+  border: 0;
+  padding: 4px 2px;
+  color: var(--fg-3);
+  font-size: 0.76rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+.photoBtn:hover {
+  color: var(--fg);
+}
+.addPhotos {
+  --ch: 8px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 4px;
+  min-height: 132px;
+  aspect-ratio: 1;
+  background: var(--ink-deep);
+  box-shadow: inset 0 0 0 1px var(--edge);
+  color: var(--fg-3);
+  font-size: 0.86rem;
+  font-weight: 500;
+  cursor: pointer;
+  clip-path: polygon(var(--ch) 0, 100% 0, 100% calc(100% - var(--ch)), calc(100% - var(--ch)) 100%, 0 100%, 0 var(--ch));
+  transition: color 160ms var(--ease), background 160ms var(--ease);
+}
+.addPhotos:hover {
+  color: var(--fg);
+  background: var(--panel);
+}
+.addPhotos:has(:focus-visible) {
+  outline: 2px solid var(--tan);
+  outline-offset: -2px;
+}
+.addPhotosPlus {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.7rem;
+  line-height: 1;
+  color: var(--tan);
+}
+
+.segmented {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 18px;
+}
+.seg {
+  --ch: 6px;
+  display: grid;
+  gap: 2px;
+  text-align: left;
+  background: var(--ink-deep);
+  border: 0;
+  padding: 10px 12px 11px;
+  color: var(--fg-3);
+  cursor: pointer;
+  clip-path: polygon(var(--ch) 0, 100% 0, 100% calc(100% - var(--ch)), calc(100% - var(--ch)) 100%, 0 100%, 0 var(--ch));
+  transition: background 160ms var(--ease), color 160ms var(--ease);
+  font: inherit;
+}
+.seg span {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.seg small {
+  font-size: 0.74rem;
+  color: var(--fg-4);
+  line-height: 1.35;
+}
+.seg:hover {
+  color: var(--fg-2);
+}
+.segOn {
+  background: var(--panel-2);
+  color: var(--fg);
+  box-shadow: inset 0 1px 0 var(--lip);
+}
+.segOn small {
+  color: var(--fg-3);
+}
+.editorActions {
+  display: flex;
+  align-items: center;
+  gap: 10px 20px;
+  flex-wrap: wrap;
+}
+.textLink {
+  background: none;
+  border: 0;
+  padding: 10px 0;
+  color: var(--fg-2);
+  font-size: 0.92rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  font-family: inherit;
+}
+.textLink:hover {
+  color: var(--tan-bright);
+}
+
+/* ── Stars in the log ──────────────────────────────────────────────────── */
+.starsRead {
+  display: inline-flex;
+  gap: 2px;
+  vertical-align: -2px;
+}
+.starOn {
+  color: var(--tan);
+}
+.starOff {
+  color: var(--fg-4);
+  opacity: 0.5;
+}
+
+/* ── Empty state ───────────────────────────────────────────────────────── */
+.empty {
+  padding: 40px 0 44px;
+  border-top: 1px solid var(--edge-soft);
+  color: var(--fg-3);
+  font-size: 0.94rem;
+  line-height: 1.6;
+  max-width: 46ch;
+}
+.empty strong {
+  display: block;
+  margin-bottom: 6px;
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--fg-2);
+}
+
+/* ── The gate ──────────────────────────────────────────────────────────── */
+.gate {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 40px 22px;
+  background: linear-gradient(152deg, rgba(213, 186, 140, 0.09) 0%, rgba(213, 186, 140, 0.035) 30%, rgba(213, 186, 140, 0) 58%);
+}
+.gateCard {
+  width: 100%;
+  max-width: 380px;
+  display: grid;
+  gap: 12px;
+}
+.gateBrand {
+  display: grid;
+  justify-items: start;
+  gap: 6px;
+  margin-bottom: 22px;
+}
+.gateBrand .word {
+  font-size: 1.2rem;
+  margin-top: 8px;
+}
+.gateBtn {
+  margin-top: 4px;
+  min-height: 50px;
+}

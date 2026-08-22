@@ -26,6 +26,8 @@ export const business = {
   phoneAlt: '385-241-4679',
   phoneAltHref: 'tel:+13852414679',
   smsHref: 'sms:+18016913685',
+  /** The 385 line is the one that takes texts and photos of the job. */
+  smsAltHref: 'sms:+13852414679',
 
   email: 'accentwelding25@gmail.com',
   emailHref: 'mailto:accentwelding25@gmail.com',
@@ -80,15 +82,17 @@ export const business = {
 } as const;
 
 /**
- * The four things the shop makes. In the nav these sit behind one Order
- * control rather than four separate links, so the bar carries one decision
- * instead of a row of them.
+ * The things the shop makes. In the nav these sit behind one Order control
+ * rather than five separate links, so the bar carries one decision instead
+ * of a row of them. "Custom & Other" is the board of one-off pieces listed
+ * for sale from the panel (/admin → Pieces).
  */
 export const products = [
   { href: '/railings', label: 'Railings' },
   { href: '/fencing', label: 'Fencing' },
   { href: '/gates', label: 'Gates' },
   { href: '/garden-boxes', label: 'Garden Boxes' },
+  { href: '/custom', label: 'Custom & Other' },
 ] as const;
 
 /** Everything else in the bar. */

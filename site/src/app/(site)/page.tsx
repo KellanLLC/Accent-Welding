@@ -5,12 +5,17 @@ import { Hero } from '@/components/Hero';
 import { Arrow } from '@/components/Arrow';
 import { ReelWall } from '@/components/ReelWall';
 import { BoxTaste } from '@/components/home/BoxTaste';
+import { ForSale } from '@/components/home/ForSale';
 import { GateDrawing } from '@/drawings/GateDrawing';
 import { standardColors } from '@/config/products';
 import { business } from '@/config/business';
 import s from './page.module.css';
 
 const bronze = standardColors.find((c) => c.id === 'bronze')!;
+
+/* Rendered per request rather than at build, so the for-sale strip can read
+   what is listed right now. The strip renders nothing when nothing is listed. */
+export const dynamic = 'force-dynamic';
 
 export default function Home() {
   return (
@@ -128,6 +133,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <ForSale />
 
       <section className={`section ${s.priceBand}`}>
         <div className="wrap">

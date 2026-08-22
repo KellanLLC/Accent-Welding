@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { business } from '@/config/business';
 import { Arrow } from '@/components/Arrow';
 import { Mark } from '@/components/Mark';
+import { EnquiryForm } from '@/components/EnquiryForm';
 import c from './contact.module.css';
 
 export const metadata: Metadata = {
@@ -62,6 +63,39 @@ export default function Contact() {
               </span>
             </span>
           </a>
+        </div>
+      </section>
+
+      <section className="section" id="form">
+        <div className="wrap">
+          <div className={c.formGrid}>
+            <div className={c.formIntro}>
+              <h2 className={c.formTitle}>
+                Or write it down <em className={c.em}>here</em>.
+              </h2>
+              <p className={c.formCopy}>
+                Name, number, roughly what you need. It lands in the shop the moment you send it and
+                you get a call or a text back. Photos and drawings are best by text or email.
+              </p>
+            </div>
+            <div className={`plate ${c.formPlate}`}>
+              <div className={`plateInner ${c.formInner}`}>
+                <EnquiryForm
+                  source="contact"
+                  idPrefix="ct"
+                  products={[
+                    'Railing',
+                    'Fencing',
+                    'Gate',
+                    'Garden box',
+                    'Custom fabrication',
+                    'A piece for sale on the site',
+                    'Something else',
+                  ]}
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

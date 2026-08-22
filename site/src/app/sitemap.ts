@@ -13,6 +13,7 @@ const routes = [
   ['/gates', 0.8],
   ['/garden-boxes', 0.8],
   ['/fabrication', 0.7],
+  ['/custom', 0.7],
   ['/work', 0.6],
   ['/about', 0.5],
   ['/contact', 0.6],

@@ -1,4 +1,18 @@
 import type { NextConfig } from 'next';
+import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
+
+/**
+ * Gives `next dev` the same bindings the deployed Worker has (the D1 database,
+ * the KV namespace for photos, the secrets in ../.dev.vars), served by
+ * miniflare from the wrangler config at the repo root. Without this every
+ * `getCloudflareContext()` call in dev throws.
+ */
+initOpenNextCloudflareForDev({
+  configPath: '../wrangler.jsonc',
+  // Same local state directory `npx wrangler d1 execute --local` writes to
+  // when run from the repo root, so one schema apply serves both.
+  persist: { path: '../.wrangler/state/v3' },
+});
 
 const nextConfig: NextConfig = {
   /* The floating dev badge sits over the bottom-left of every page and gets in

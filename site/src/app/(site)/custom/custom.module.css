@@ -1,0 +1,339 @@
+/* ── Custom & other pieces: the shop's own for-sale board ───────────────── */
+
+.head {
+  padding-block: clamp(46px, 7vw, 92px) clamp(26px, 3vw, 40px);
+}
+.headGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 22px clamp(32px, 5vw, 78px);
+  align-items: end;
+}
+.em {
+  font-style: normal;
+  color: var(--tan);
+}
+.lede {
+  color: var(--fg-2);
+  font-size: clamp(1.02rem, 1.4vw, 1.2rem);
+  max-width: 44ch;
+}
+
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.card {
+  --ch: var(--chamfer);
+  display: block;
+  text-decoration: none;
+  height: 100%;
+  transition: background 200ms var(--ease);
+}
+.card:hover {
+  background: var(--edge-strong);
+}
+.cardInner {
+  --ch: var(--chamfer);
+  background: var(--ink-lift);
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  transition: background 200ms var(--ease);
+}
+.card:hover .cardInner {
+  background: #2f2b29;
+}
+
+.shot {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--ink-deep);
+}
+.shot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 700ms var(--ease-out);
+}
+.card:hover .shot img {
+  transform: scale(1.035);
+}
+.cardSold .shot img {
+  filter: saturate(0.4) brightness(0.72);
+}
+.noPhoto {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--fg-4);
+  font-size: 0.86rem;
+}
+/* The sold stamp: a tan plate, cut on the chamfer, sitting in the corner of
+   the photo the way a sold tag hangs off a piece in the yard. */
+.soldMark {
+  --ch: 6px;
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  padding: 6px 12px;
+  background: var(--tan);
+  color: #201d18;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  clip-path: polygon(var(--ch) 0, 100% 0, 100% calc(100% - var(--ch)), calc(100% - var(--ch)) 100%, 0 100%, 0 var(--ch));
+}
+
+/* One internal grid for every card, so name, price, copy and the link land on
+   the same lines across the row however long the copy runs. */
+.cardBody {
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  padding: 18px 22px 20px;
+  gap: 6px;
+}
+.cardName {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 700;
+  font-size: 1.28rem;
+  line-height: 1.12;
+  color: var(--fg);
+}
+.cardPrice {
+  color: var(--tan);
+  font-weight: 600;
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
+}
+.cardSold .cardPrice {
+  color: var(--fg-3);
+}
+.cardCopy {
+  color: var(--fg-3);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.cardLink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  color: var(--fg);
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+.cardLink :global(.arrow) {
+  color: var(--tan);
+  transition: transform 280ms var(--ease-out);
+}
+.card:hover .cardLink :global(.arrow) {
+  transform: translate(3px, -3px);
+}
+.card:hover .cardLink {
+  color: var(--tan-bright);
+}
+
+.emptyPlate {
+  --ch: var(--chamfer-lg);
+}
+.emptyInner {
+  --ch: var(--chamfer-lg);
+  background: var(--ink-lift);
+  padding: clamp(26px, 4vw, 48px);
+}
+.emptyTitle {
+  font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+  margin: 0 0 12px;
+}
+.emptyCopy {
+  color: var(--fg-2);
+  max-width: 52ch;
+  margin-bottom: 24px;
+}
+.emptyActions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.cta {
+  --ch: var(--chamfer-lg);
+}
+.ctaInner {
+  --ch: var(--chamfer-lg);
+  background: var(--ink-lift);
+  padding: clamp(26px, 3.6vw, 46px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px clamp(30px, 5vw, 70px);
+  align-items: center;
+}
+.ctaTitle {
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+  line-height: 1.1;
+  margin: 0 0 10px;
+  max-width: 20ch;
+}
+.ctaCopy {
+  color: var(--fg-3);
+  max-width: 52ch;
+  font-size: 0.96rem;
+}
+.ctaActions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 13px;
+}
+.ctaCall {
+  color: var(--fg-2);
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-variant-numeric: tabular-nums;
+}
+.ctaCall:hover {
+  color: var(--tan-bright);
+}
+
+/* ── Detail page ───────────────────────────────────────────────────────── */
+
+.detail {
+  display: grid;
+  gap: clamp(24px, 4vw, 56px);
+  padding-block: clamp(30px, 5vw, 60px) clamp(40px, 6vw, 80px);
+}
+@media (min-width: 900px) {
+  .detail {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    align-items: start;
+  }
+}
+.crumb {
+  display: inline-block;
+  color: var(--fg-3);
+  text-decoration: none;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+.crumb:hover {
+  color: var(--tan-bright);
+}
+.gallery {
+  display: grid;
+  gap: 10px;
+}
+.mainShot {
+  --ch: var(--chamfer);
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: var(--ink-deep);
+  overflow: hidden;
+  clip-path: polygon(var(--ch) 0, 100% 0, 100% calc(100% - var(--ch)), calc(100% - var(--ch)) 100%, 0 100%, 0 var(--ch));
+}
+.mainShot img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: var(--ink-deep);
+}
+.thumbs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+  gap: 8px;
+}
+.thumbs a {
+  --ch: 6px;
+  display: block;
+  aspect-ratio: 1;
+  background: var(--ink-deep);
+  overflow: hidden;
+  clip-path: polygon(var(--ch) 0, 100% 0, 100% calc(100% - var(--ch)), calc(100% - var(--ch)) 100%, 0 100%, 0 var(--ch));
+}
+.thumbs img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.title {
+  font-size: clamp(1.9rem, 3.6vw, 2.8rem);
+  line-height: 1.05;
+  margin: 0 0 12px;
+}
+.price {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+  color: var(--tan);
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 18px;
+}
+.priceSold {
+  color: var(--fg-3);
+}
+.desc {
+  color: var(--fg-2);
+  white-space: pre-wrap;
+  max-width: 56ch;
+  margin-bottom: 26px;
+}
+/* Three cells that wrap without leaving a hole: the last one stretches to
+   fill its row rather than sitting beside an empty slot. */
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1px;
+  background: var(--edge);
+  border-block: 1px solid var(--edge);
+  margin: 0 0 26px;
+}
+.fact {
+  flex: 1 1 150px;
+  background: var(--ink);
+  padding: 14px 16px 15px;
+}
+.fact dt {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-4);
+  margin-bottom: 6px;
+}
+.fact dd {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--fg);
+}
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 14px 22px;
+  flex-wrap: wrap;
+}
+.soldNote {
+  color: var(--fg-2);
+  margin-bottom: 18px;
+  max-width: 46ch;
+}
+
+@media (max-width: 860px) {
+  .headGrid,
+  .ctaInner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

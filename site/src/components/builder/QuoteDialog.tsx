@@ -60,6 +60,8 @@ export function QuoteDialog({
       email: String(form.get('email') ?? ''),
       where: String(form.get('where') ?? ''),
       notes: String(form.get('notes') ?? ''),
+      source: 'builder',
+      website: String(form.get('website') ?? ''),
     };
     setBusy(true);
     try {
@@ -68,11 +70,15 @@ export function QuoteDialog({
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      if (!res.ok) throw new Error(`Server said ${res.status}`);
+      const data = (await res.json().catch(() => ({}))) as { error?: string };
+      if (!res.ok) throw new Error(data.error && res.status < 500 ? data.error : `Server said ${res.status}`);
       setDone(true);
-    } catch {
+    } catch (err) {
+      // A validation message from the server is worth showing as-is; anything
+      // else gets the phone number, because the lead matters more than the why.
+      const msg = err instanceof Error && !/^Server said/.test(err.message) ? err.message : '';
       setError(
-        `Something went wrong sending that. Call or text ${business.phone} and we will pick it up from there.`,
+        msg || `Something went wrong sending that. Call or text ${business.phone} and we will pick it up from there.`,
       );
     } finally {
       setBusy(false);
@@ -217,6 +223,11 @@ export function QuoteDialog({
                       className={s.textarea}
                       placeholder="Slope, existing footings, a gate in the run, a date you need it by…"
                     />
+                  </div>
+                  {/* Honeypot: a person never sees this, a bot fills everything. */}
+                  <div className="sr" aria-hidden="true">
+                    <label htmlFor="q-website">Website</label>
+                    <input id="q-website" name="website" tabIndex={-1} autoComplete="off" />
                   </div>
                 </div>
 
