@@ -1,6 +1,7 @@
-import { db } from './env';
+import type { Sweeper } from '@/worker/sweeper';
+import { db, env } from './env';
 import { firstName, prettyPhone } from './phone';
-import { readSettings, followupHours } from './settings';
+import { readSettings, followupHours, writeSetting } from './settings';
 import { sendSms } from './sms';
 import { fill, isoInHours, nowIso, reviewLink } from './templates';
 
@@ -68,25 +69,31 @@ export async function runFollowups() {
       console.error(`follow-up ${step} failed for row ${row.id}:`, err instanceof Error ? err.message : err);
     }
   }
+  await writeSetting('last_sweep_at', nowIso());
   return { due: (results || []).length, sent };
 }
 
-const SWEEP_EVERY_MS = 10 * 60 * 1000;
+const ENSURE_EVERY_MS = 10 * 60 * 1000;
+let lastEnsureAt = 0;
 
 /**
- * Runs the sweep off the back of ordinary traffic, because this account is at
- * its five cron-trigger limit and a sixth cannot be registered.
- *
- * The claim is a compare-and-set on one settings row: whoever moves
- * last_sweep_at forward wins, everyone else returns immediately. Two requests
- * landing together therefore cannot both sweep and double-send.
+ * Keeps the follow-up clock running. The clock is a Durable Object alarm
+ * (site/src/worker/sweeper.ts) that rings every ten minutes on its own; this
+ * is only the safety net that starts it after a fresh deploy, or restarts it
+ * if it were ever lost. Called off ordinary traffic, throttled per isolate so
+ * it costs one cheap call every ten minutes at most.
  */
-export async function maybeSweep() {
-  const cutoff = new Date(Date.now() - SWEEP_EVERY_MS).toISOString().replace(/\.\d{3}Z$/, 'Z');
-  const claim = await db()
-    .prepare(`UPDATE settings SET value = ?1 WHERE key = 'last_sweep_at' AND (value = '' OR value < ?2)`)
-    .bind(nowIso(), cutoff)
-    .run();
-  if (!claim.meta || !claim.meta.changes) return;
-  await runFollowups();
+export async function keepClockRunning() {
+  // `next dev` has the binding but no Durable Object behind it (wrangler says
+  // so at startup); the clock is a deployed-Worker thing, so skip it there.
+  if (process.env.NODE_ENV !== 'production') return;
+  const now = Date.now();
+  if (now - lastEnsureAt < ENSURE_EVERY_MS) return;
+  lastEnsureAt = now;
+  // `wrangler types` cannot see the class from the config alone, so the
+  // namespace is typed here.
+  const clock = env().SWEEPER as unknown as DurableObjectNamespace<Sweeper> | undefined;
+  if (!clock) return;
+  const r = await clock.getByName('clock').ensure();
+  if (r.started) console.log('[clock] started; first tick at', new Date(r.nextAt).toISOString());
 }

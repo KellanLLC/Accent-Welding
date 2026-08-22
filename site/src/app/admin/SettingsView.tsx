@@ -43,6 +43,17 @@ function fromSettings(st: Record<string, string>): Form {
   return f;
 }
 
+/** "Last check: 4 minutes ago." or a warning if the clock has not run yet. */
+function lastSweep(iso: string | undefined) {
+  if (!iso) return 'It has not run yet.';
+  const mins = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
+  if (mins < 1) return 'Last check: just now.';
+  if (mins < 60) return `Last check: ${mins} minute${mins === 1 ? '' : 's'} ago.`;
+  const h = Math.round(mins / 60);
+  if (h < 48) return `Last check: ${h} hour${h === 1 ? '' : 's'} ago.`;
+  return `Last check: ${Math.round(h / 24)} days ago.`;
+}
+
 function humanAfter(hours: number) {
   if (!hours) return '';
   if (hours < 24) return `${hours} hour${hours === 1 ? '' : 's'}`;
@@ -212,9 +223,9 @@ export function SettingsView({ data, setData }: Props) {
         </div>
       </Panel>
 
-      <Panel title="Follow-up sweep" hint="Follow-ups normally go out on their own, checked every ten minutes off ordinary site traffic. This sends anything that is due right now.">
+      <Panel title="Follow-up clock" hint={`Follow-ups go out on their own: the site checks for anything due every ten minutes, around the clock, whether or not anyone is on it. ${lastSweep(data.settings.last_sweep_at)} Nothing to do here day to day; the button only forces a check this second.`}>
         <div className={s.actionRow}>
-          <ActionButton kind="dark" phase={sweep.phase} labels={{ idle: 'Run now', busy: 'Running…', done: 'Done', failed: 'Failed' }} onClick={runSweep} />
+          <ActionButton kind="dark" phase={sweep.phase} labels={{ idle: 'Check now', busy: 'Checking…', done: 'Done', failed: 'Failed' }} onClick={runSweep} />
           <Msg text={sweepOut} kind="ok" />
         </div>
       </Panel>

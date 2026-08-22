@@ -103,8 +103,8 @@ INSERT OR IGNORE INTO settings (key, value) VALUES
   ('owner_phone',    '+13852414679'),
   ('notify_owner',   '1'),
 
-  -- Claimed by whichever request runs the follow-up sweep. Must exist as a
-  -- row: the claim is an UPDATE, and an UPDATE cannot create one.
+  -- When the follow-up sweep last ran. The clock rings every ten minutes;
+  -- the panel shows this so you can see it is alive.
   ('last_sweep_at',  ''),
 
   -- What lands on the owner's phone when a request comes in. {{link}} opens

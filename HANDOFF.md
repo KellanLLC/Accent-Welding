@@ -76,7 +76,8 @@ The panel (password-gated, built for a phone) does four things:
   takes texts), the alert on/off switch, every line of text the system sends,
   the follow-up ladder (24h / 24h / 48h by default), the rating page on/off
   (on by default) with its threshold and copy, the Google review link, a
-  webhook mapping test, and a "run follow-ups now" button.
+  webhook mapping test, and a "check follow-ups now" button (the clock itself
+  runs every ten minutes on its own).
 
 ### The review journey
 
@@ -95,14 +96,19 @@ POST, so it works on any phone on bad signal.
 > everyone straight to Google, which is the compliant behaviour and keeps the
 > tracking.
 
-Follow-ups would normally run from a cron trigger, but the account is at
-Cloudflare's limit of 5 cron triggers (API error 10072), so the app sweeps off
-ordinary traffic instead: any request to the form endpoint, the panel, the
-rating page or `/custom` checks whether a sweep is due and sends whatever has
-come due, at most once every ten minutes, with a compare-and-set claim so two
-requests can never double-send. With no traffic at all nothing fires; in
-practice there is plenty, and Settings has **Run now**. Free a cron slot on
-another Worker and uncomment `triggers` in `wrangler.jsonc` to make it exact.
+Follow-ups go out on a real clock, whether or not anyone visits the site. A
+cron trigger would be the obvious tool, but the account is at Cloudflare's
+limit of 5 cron triggers (API error 10072), so the clock is a Durable Object
+alarm instead (`site/src/worker/sweeper.ts`, bound as `SWEEPER`, exported from
+the Worker entry `site/custom-worker.ts`): one object that rings itself every
+ten minutes, durably across deploys, and on each ring signs a one-minute panel
+session and POSTs the app's own `/api/admin/run-followups` over the
+`WORKER_SELF_REFERENCE` service binding. Ordinary traffic (the form endpoint,
+the panel, the rating page, `/custom`) only calls `ensure()` on it as a safety
+net, so the clock starts itself on the first visit after a fresh deploy.
+Settings shows the last check time and has **Check now** for an immediate
+pass. `next dev` has no Durable Objects, so the clock does not run locally;
+`npx wrangler dev` on the built Worker does run it.
 
 ### What it is made of
 

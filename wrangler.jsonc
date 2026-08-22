@@ -29,8 +29,10 @@
 		"command": "npm ci && npx opennextjs-cloudflare build --skipWranglerConfigCheck"
 	},
 
-	// Both produced by the build above. Paths are relative to this file.
-	"main": "site/.open-next/worker.js",
+	// The entry is a thin wrapper (site/custom-worker.ts) around the worker the
+	// build above produces at site/.open-next/worker.js; it adds the follow-up
+	// clock's Durable Object class, which the generated file cannot carry.
+	"main": "site/custom-worker.ts",
 	"assets": {
 		"directory": "site/.open-next/assets",
 		"binding": "ASSETS"
@@ -85,13 +87,23 @@
 		"COMPANY_NAME": "Accent Welding"
 	},
 
-	// Review follow-ups would normally run from a cron trigger, but this
-	// account is at Cloudflare's limit of 5 cron triggers (API error 10072), so
-	// registering one here fails the deploy. The app instead sweeps off
-	// ordinary traffic — see maybeSweep in site/src/lib/server/followups.ts —
-	// and the panel has a "Run now" button. Free a slot on another Worker and
-	// this becomes the better option:
-	//   "triggers": { "crons": ["*/15 * * * *"] },
+	// ---------------------------------------------------------------------
+	// The follow-up clock.
+	//
+	// Review follow-ups have to go out every ten minutes whether or not anyone
+	// is on the site. A cron trigger is the obvious tool, but this account is
+	// at Cloudflare's limit of 5 cron triggers (API error 10072) and a sixth
+	// fails the deploy. So the clock is a Durable Object alarm instead
+	// (site/src/worker/sweeper.ts): one object that rings itself every ten
+	// minutes, durably, and runs the sweep by calling the app's own
+	// /api/admin/run-followups route over the service binding below.
+	// SQLite-backed, so it is available on every plan.
+	// ---------------------------------------------------------------------
+	"durable_objects": {
+		"bindings": [{ "name": "SWEEPER", "class_name": "Sweeper" }]
+	},
+	"migrations": [{ "tag": "v1", "new_sqlite_classes": ["Sweeper"] }],
+	"services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "accent-welding" }],
 
 	// Quote submissions and every text that is sent are logged, so the log has
 	// to be queryable.

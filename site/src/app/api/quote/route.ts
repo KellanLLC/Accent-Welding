@@ -1,5 +1,5 @@
 import { afterResponse } from '@/lib/server/env';
-import { maybeSweep } from '@/lib/server/followups';
+import { keepClockRunning } from '@/lib/server/followups';
 import { json, readJson, sameOrigin, str } from '@/lib/server/http';
 import { normalisePhone } from '@/lib/server/phone';
 import { floodGuardTripped, insertQuote, notifyOwnerOfQuote } from '@/lib/server/quotes';
@@ -73,7 +73,7 @@ export async function POST(req: Request) {
   });
 
   if (inserted) notifyOwnerOfQuote(inserted.id, name, phoneRaw, str(body.product, 120) || 'Enquiry');
-  afterResponse(maybeSweep(), 'sweep');
+  afterResponse(keepClockRunning(), 'clock');
 
   return json({ ok: true, id: inserted?.id });
 }

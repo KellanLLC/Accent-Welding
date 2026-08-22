@@ -4,7 +4,7 @@ import { Arrow } from '@/components/Arrow';
 import { business } from '@/config/business';
 import { displayPrice, photoUrl } from '@/lib/panel-types';
 import { afterResponse } from '@/lib/server/env';
-import { maybeSweep } from '@/lib/server/followups';
+import { keepClockRunning } from '@/lib/server/followups';
 import { listPublicItems } from '@/lib/server/items';
 import c from './custom.module.css';
 
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 
 export default async function CustomPage() {
   const items = await listPublicItems();
-  afterResponse(maybeSweep(), 'sweep');
+  afterResponse(keepClockRunning(), 'clock');
 
   return (
     <>

@@ -1,34 +1,16 @@
 import { env } from './env';
 import { json } from './http';
+import { signSession } from './session-token';
 
 /**
  * Panel sessions. One password (the ADMIN_PASSWORD secret) opens the panel;
- * a signed, expiring cookie keeps it open. The cookie is `exp.signature`
- * where the signature is an HMAC of the expiry under SESSION_SECRET, so
- * changing that secret signs everyone out at once.
+ * a signed, expiring cookie keeps it open. The token format lives in
+ * session-token.ts so the follow-up clock can mint one too; changing
+ * SESSION_SECRET signs everyone out at once.
  */
 
 export const COOKIE_NAME = 'aw_session';
 const SESSION_TTL = 60 * 60 * 12; // 12 hours
-const enc = new TextEncoder();
-
-function b64url(buf: ArrayBuffer) {
-  const bytes = new Uint8Array(buf);
-  let s = '';
-  for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
-  return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-}
-
-async function hmac(secret: string, data: string) {
-  const key = await crypto.subtle.importKey(
-    'raw',
-    enc.encode(secret),
-    { name: 'HMAC', hash: 'SHA-256' },
-    false,
-    ['sign'],
-  );
-  return b64url(await crypto.subtle.sign('HMAC', key, enc.encode(data)));
-}
 
 /** Compares in time independent of where the first difference falls. */
 export function safeEqual(a: unknown, b: unknown) {
@@ -41,8 +23,7 @@ export function safeEqual(a: unknown, b: unknown) {
 }
 
 export async function issueToken() {
-  const exp = Math.floor(Date.now() / 1000) + SESSION_TTL;
-  return `${exp}.${await hmac(env().SESSION_SECRET, `admin|${exp}`)}`;
+  return signSession(env().SESSION_SECRET, Math.floor(Date.now() / 1000) + SESSION_TTL);
 }
 
 export async function tokenValid(token: string | null) {
@@ -51,10 +32,9 @@ export async function tokenValid(token: string | null) {
   const dot = token.indexOf('.');
   if (dot < 1) return false;
   const exp = token.slice(0, dot);
-  const sig = token.slice(dot + 1);
   if (!/^\d+$/.test(exp)) return false;
   if (Number(exp) < Math.floor(Date.now() / 1000)) return false;
-  return safeEqual(sig, await hmac(secret, `admin|${exp}`));
+  return safeEqual(token, await signSession(secret, Number(exp)));
 }
 
 export function readCookie(req: Request, name: string) {

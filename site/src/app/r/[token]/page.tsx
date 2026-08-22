@@ -4,7 +4,7 @@ import { Mark } from '@/components/Mark';
 import { Star } from '@/components/Star';
 import { business } from '@/config/business';
 import { afterResponse } from '@/lib/server/env';
-import { maybeSweep } from '@/lib/server/followups';
+import { keepClockRunning } from '@/lib/server/followups';
 import { findByToken, markClicked } from '@/lib/server/reviews';
 import { readSettings } from '@/lib/server/settings';
 import s from './rate.module.css';
@@ -37,7 +37,7 @@ export default async function RatePage({ params }: { params: Promise<{ token: st
   let state: State = 'gone';
   if (row) {
     await markClicked(row);
-    afterResponse(maybeSweep(), 'sweep');
+    afterResponse(keepClockRunning(), 'clock');
 
     const google = safeUrl(settings.google_review_url);
     const threshold = Number(settings.screening_threshold || 4);

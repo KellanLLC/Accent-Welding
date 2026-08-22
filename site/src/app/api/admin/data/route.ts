@@ -1,7 +1,7 @@
 import type { PanelData } from '@/lib/panel-types';
 import { guarded } from '@/lib/server/auth';
 import { afterResponse, db } from '@/lib/server/env';
-import { maybeSweep } from '@/lib/server/followups';
+import { keepClockRunning } from '@/lib/server/followups';
 import { json } from '@/lib/server/http';
 import { listItems } from '@/lib/server/items';
 import { listQuotes } from '@/lib/server/quotes';
@@ -19,7 +19,7 @@ export const GET = guarded(async () => {
     listItems(),
     readSettings(),
   ]);
-  afterResponse(maybeSweep(), 'sweep');
+  afterResponse(keepClockRunning(), 'clock');
   const data: PanelData = { quotes, reviews: reviews.results || [], items, settings };
   return json(data);
 });
