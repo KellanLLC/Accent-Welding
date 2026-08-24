@@ -27,6 +27,22 @@ type Payload = {
   website?: string; // honeypot: people never see it, bots fill everything
 };
 
+// The pitch words no railing customer ever types. A submission that picks the
+// "Marketing / SEO" bait option on the contact form, or whose text reads like
+// the cold pitch, gets the honeypot treatment: a cheerful yes, then nothing.
+// No row in the panel, no text to anyone.
+const SPAM_TELLS = [
+  /\bseo\b/i,
+  /search engine optimi[sz]ation/i,
+  /\bbacklinks?\b/i,
+  /digital marketing/i,
+  /marketing (?:services|agency|team|expert)/i,
+  /(?:web|website) (?:design|development) (?:services|agency|company)/i,
+  /rank(?:ing)? (?:on|in) google/i,
+  /first page of google/i,
+  /lead generation/i,
+];
+
 export async function POST(req: Request) {
   if (!sameOrigin(req)) return json({ ok: false, error: 'Origin not allowed.' }, 403);
 
@@ -34,6 +50,12 @@ export async function POST(req: Request) {
   if (!body) return json({ ok: false, error: 'Bad JSON' }, 400);
 
   if (str(body.website, 50)) return json({ ok: true });
+
+  const product = str(body.product, 120);
+  const notes = str(body.notes, 4000);
+  if (/^marketing/i.test(product) || SPAM_TELLS.some((t) => t.test(`${product} ${notes}`))) {
+    return json({ ok: true });
+  }
 
   const name = str(body.name, 120);
   const phoneRaw = str(body.phone, 40);
@@ -56,7 +78,7 @@ export async function POST(req: Request) {
     body.source === 'contact' || body.source === 'piece' ? body.source : 'builder';
 
   const inserted = await insertQuote({
-    product: str(body.product, 120) || 'Enquiry',
+    product: product || 'Enquiry',
     spec: Array.isArray(body.spec)
       ? body.spec.slice(0, 40).map((r) => ({ key: str(r?.key, 80), value: str(r?.value, 200) }))
       : [],
@@ -66,13 +88,13 @@ export async function POST(req: Request) {
     phoneRaw,
     email,
     town,
-    notes: str(body.notes, 4000),
+    notes,
     source,
     ip,
     userAgent: (req.headers.get('User-Agent') || '').slice(0, 400),
   });
 
-  if (inserted) notifyOwnerOfQuote(inserted.id, name, phoneRaw, str(body.product, 120) || 'Enquiry');
+  if (inserted) notifyOwnerOfQuote(inserted.id, name, phoneRaw, product || 'Enquiry');
   afterResponse(keepClockRunning(), 'clock');
 
   return json({ ok: true, id: inserted?.id });

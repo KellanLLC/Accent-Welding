@@ -91,6 +91,9 @@ export default function Contact() {
                     'Garden box',
                     'Custom fabrication',
                     'A piece for sale on the site',
+                    // Bait. Nobody hiring a welder picks this; the cold-pitch
+                    // crowd does, and /api/quote quietly drops it on the floor.
+                    'Marketing / SEO',
                     'Something else',
                   ]}
                 />
