@@ -20,7 +20,11 @@ export function Requests({ data, setData, openId, onOpenChange }: Props) {
     setOpen((o) => ({ ...o, [id]: !isOpen(id) }));
   };
 
-  if (!data.quotes.length) {
+  // Spam-flagged rows stay out of the board; they live behind "Check spam
+  // likely" in the footer.
+  const quotes = data.quotes.filter((q) => !q.spam_via);
+
+  if (!quotes.length) {
     return (
       <>
         <Head title="Requests" copy="Everything sent through the site: the four builders, the contact form, and questions about a listed piece." />
@@ -33,7 +37,7 @@ export function Requests({ data, setData, openId, onOpenChange }: Props) {
     <>
       <Head title="Requests" copy="Everything sent through the site. Open one to read it, mark where it stands, or text the customer for a review." />
       <ul className={s.list}>
-        {data.quotes.map((q) => (
+        {quotes.map((q) => (
           <RequestRow
             key={q.id}
             q={q}

@@ -197,10 +197,124 @@
   font-weight: 600;
 }
 
+.footRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 56px;
+}
 .foot {
-  margin: 56px 0 0;
+  margin: 0;
   font-size: 0.8rem;
   color: var(--fg-4);
+}
+.footLink {
+  flex: none;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 4px 0;
+  font-size: 0.8rem;
+  color: var(--fg-3);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--fg-4);
+  transition: color 160ms var(--ease);
+}
+.footLink:hover {
+  color: var(--fg);
+}
+
+/* ── Spam likely ──────────────────────────────────────────────────────────
+   The trap's holding pen, opened from the footer. Same ticket rows as the
+   board, stripped down: no status tag, no disclosure — the whole point is to
+   read it at a glance and either rescue it or bin it. */
+.spamWrap {
+  margin-top: 56px;
+}
+.spamTitle {
+  margin: 0 0 4px;
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: var(--fg);
+}
+.spamWrap .viewCopy {
+  margin-bottom: 18px;
+}
+.spamRow {
+  border-top: 1px solid var(--edge-soft);
+  padding: 15px 0 17px;
+}
+.spamRow:last-child {
+  border-bottom: 1px solid var(--edge-soft);
+}
+.spamHead {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.spamName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+  color: var(--fg-2);
+}
+.spamDate {
+  margin-left: auto;
+  flex: none;
+  font-size: 0.82rem;
+  color: var(--fg-4);
+  font-variant-numeric: tabular-nums;
+}
+.spamWhy {
+  margin: 4px 0 0;
+  font-size: 0.86rem;
+  color: var(--fg-3);
+}
+.spamText {
+  margin: 8px 0 0;
+  max-width: 70ch;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--fg-2);
+}
+.spamMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: var(--fg-3);
+}
+.spamActs {
+  display: flex;
+  gap: 18px;
+  margin-top: 4px;
+}
+.spamAct {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 10px 0; /* 40px+ tall: tapped from a phone */
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--fg-3);
+  transition: color 160ms var(--ease);
+}
+.spamAct:hover {
+  color: var(--fg);
+}
+.spamAct:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.spamActArmed,
+.spamActArmed:hover {
+  color: #d89a72;
 }
 
 /* ── The board ─────────────────────────────────────────────────────────── */

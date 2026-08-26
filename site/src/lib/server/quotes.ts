@@ -6,7 +6,7 @@ import { sendSms } from './sms';
 import { fill, panelLink } from './templates';
 
 export const QUOTE_COLUMNS =
-  'id, product, spec, price, name, phone, phone_raw, email, town, notes, source, status, note, created_at';
+  'id, product, spec, price, name, phone, phone_raw, email, town, notes, source, status, note, spam_via, spam_reason, created_at';
 
 type Row = Omit<Quote, 'spec'> & { spec: string };
 
@@ -41,11 +41,13 @@ export async function insertQuote(q: {
   source: Quote['source'];
   ip: string;
   userAgent: string;
+  /** Set when the trap already knows this is spam: stored flagged, kept out of Requests. */
+  spam?: { via: string; reason: string };
 }): Promise<{ id: number; created_at: string } | null> {
   return db()
     .prepare(
-      `INSERT INTO quotes (product, spec, price, name, phone, phone_raw, email, town, notes, source, ip, user_agent)
-       VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)
+      `INSERT INTO quotes (product, spec, price, name, phone, phone_raw, email, town, notes, source, ip, user_agent, spam_via, spam_reason)
+       VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14)
        RETURNING id, created_at`,
     )
     .bind(
@@ -61,6 +63,8 @@ export async function insertQuote(q: {
       q.source,
       q.ip,
       q.userAgent,
+      q.spam?.via ?? null,
+      q.spam?.reason || null,
     )
     .first<{ id: number; created_at: string }>();
 }

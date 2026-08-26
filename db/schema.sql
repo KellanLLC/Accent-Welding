@@ -25,6 +25,8 @@ CREATE TABLE IF NOT EXISTS quotes (
   source      TEXT    NOT NULL DEFAULT 'builder',   -- builder | contact | piece
   status      TEXT    NOT NULL DEFAULT 'new',       -- new | contacted | scheduled | done
   note        TEXT,                                 -- private, panel only
+  spam_via    TEXT,                                 -- set when the trap caught it; hides it from Requests
+  spam_reason TEXT,                                 -- the AI's one-line reason, when there is one
   ip          TEXT,
   user_agent  TEXT,
   created_at  TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ','now'))

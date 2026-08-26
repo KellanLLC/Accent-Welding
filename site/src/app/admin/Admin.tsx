@@ -8,6 +8,7 @@ import { Requests } from './Requests';
 import { Reviews } from './Reviews';
 import { Pieces } from './Pieces';
 import { SettingsView } from './SettingsView';
+import { SpamView } from './Spam';
 import s from './admin.module.css';
 
 type Tab = 'requests' | 'reviews' | 'pieces' | 'settings';
@@ -19,6 +20,7 @@ export function Admin() {
   const [data, setData] = useState<PanelData>(EMPTY);
   const [tab, setTab] = useState<Tab>('requests');
   const [openQuote, setOpenQuote] = useState<number | null>(null);
+  const [spamOpen, setSpamOpen] = useState(false);
   const [loadMsg, setLoadMsg] = useState('');
   const deepLinked = useRef(false);
 
@@ -81,7 +83,8 @@ export function Admin() {
     return <Gate checking={authed === null} message={loadMsg} onOpen={() => refresh().catch(() => setLoadMsg('Could not reach the server.'))} />;
   }
 
-  const fresh = data.quotes.filter((q) => q.status === 'new').length;
+  const fresh = data.quotes.filter((q) => q.status === 'new' && !q.spam_via).length;
+  const spam = data.quotes.filter((q) => q.spam_via);
   const tabs: { key: Tab; label: string; count?: number }[] = [
     { key: 'requests', label: 'Requests', count: fresh },
     { key: 'reviews', label: 'Reviews', count: data.reviews.length },
@@ -140,7 +143,14 @@ export function Admin() {
         <SettingsView data={data} setData={setData} />
       </section>
 
-      <p className={s.foot}>Accent Welding. Panel data stays in the shop&rsquo;s own database.</p>
+      {spamOpen ? <SpamView spam={spam} setData={setData} /> : null}
+
+      <div className={s.footRow}>
+        <p className={s.foot}>Accent Welding. Panel data stays in the shop&rsquo;s own database.</p>
+        <button type="button" className={s.footLink} onClick={() => setSpamOpen((o) => !o)}>
+          {spamOpen ? 'Hide spam' : `Check spam likely${spam.length ? ` (${spam.length})` : ''}`}
+        </button>
+      </div>
     </div>
   );
 }

@@ -27,6 +27,10 @@ export type Quote = {
   source: 'builder' | 'contact' | 'piece';
   status: QuoteStatus;
   note: string | null;
+  /** Set when the spam trap caught it: what caught it, and (from the AI) why.
+      A flagged row is hidden from Requests and shown behind "Check spam". */
+  spam_via: string | null;
+  spam_reason: string | null;
   created_at: string;
 };
 

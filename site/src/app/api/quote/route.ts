@@ -61,19 +61,38 @@ export async function POST(req: Request) {
     town: str(body.where, 120),
   };
 
-  if (str(body.website, 50)) {
-    afterResponse(reportSpam('Hidden honeypot field (bot)', '', enquiry), 'spam report');
+  const ip = req.headers.get('CF-Connecting-IP') || '';
+  const userAgent = (req.headers.get('User-Agent') || '').slice(0, 400);
+  const source: 'builder' | 'contact' | 'piece' =
+    body.source === 'contact' || body.source === 'piece' ? body.source : 'builder';
+
+  // A caught submission is stored flagged — hidden from Requests, shown behind
+  // the panel's "Check spam" — and posted to Discord, and the sender is told
+  // "got it" all the same. No text goes to anyone.
+  const trapped = async (via: string, reason: string) => {
+    await insertQuote({
+      product: product || 'Enquiry',
+      spec: [],
+      price: '',
+      name: enquiry.name,
+      phone: normalisePhone(enquiry.phone) || enquiry.phone,
+      phoneRaw: enquiry.phone,
+      email: enquiry.email,
+      town: enquiry.town,
+      notes,
+      source,
+      ip,
+      userAgent,
+      spam: { via, reason },
+    }).catch((err) => console.error('[spam insert]', err instanceof Error ? err.message : err));
+    afterResponse(reportSpam(via, reason, enquiry), 'spam report');
     return json({ ok: true });
-  }
-  if (/^marketing/i.test(product)) {
-    afterResponse(reportSpam('Picked the Marketing / SEO bait option', '', enquiry), 'spam report');
-    return json({ ok: true });
-  }
+  };
+
+  if (str(body.website, 50)) return trapped('Hidden honeypot field (bot)', '');
+  if (/^marketing/i.test(product)) return trapped('Picked the Marketing / SEO bait option', '');
   const tell = SPAM_TELLS.find((t) => t.test(`${product} ${notes}`));
-  if (tell) {
-    afterResponse(reportSpam('Keyword match', String(tell), enquiry), 'spam report');
-    return json({ ok: true });
-  }
+  if (tell) return trapped('Keyword match', String(tell));
 
   const name = str(body.name, 120);
   const phoneRaw = str(body.phone, 40);
@@ -87,13 +106,9 @@ export async function POST(req: Request) {
     return json({ ok: false, error: 'That email address does not look right.' }, 422);
   }
 
-  const ip = req.headers.get('CF-Connecting-IP') || '';
   if (await floodGuardTripped(ip)) {
     return json({ ok: false, error: 'Too many requests. Please call us instead.' }, 429);
   }
-
-  const source: 'builder' | 'contact' | 'piece' =
-    body.source === 'contact' || body.source === 'piece' ? body.source : 'builder';
 
   const inserted = await insertQuote({
     product: product || 'Enquiry',
@@ -109,20 +124,23 @@ export async function POST(req: Request) {
     notes,
     source,
     ip,
-    userAgent: (req.headers.get('User-Agent') || '').slice(0, 400),
+    userAgent,
   });
 
   // The AI layer runs after the response is out, so the customer never waits
-  // on Gemini. A spam verdict pulls the row back out of the panel and posts
-  // it to Discord instead of texting the owner; anything else — including the
-  // scan failing — goes to the owner as normal.
+  // on Gemini. A spam verdict flags the row — out of Requests, into the
+  // panel's spam list — and posts it to Discord instead of texting the owner;
+  // anything else — including the scan failing — goes to the owner as normal.
   if (inserted) {
     const id = inserted.id;
     afterResponse(
       (async () => {
         const verdict = await scanEnquiry(enquiry);
         if (verdict?.spam) {
-          await db().prepare('DELETE FROM quotes WHERE id = ?1').bind(id).run();
+          await db()
+            .prepare('UPDATE quotes SET spam_via = ?1, spam_reason = ?2 WHERE id = ?3')
+            .bind('AI scan', verdict.reason || null, id)
+            .run();
           await reportSpam('AI scan', verdict.reason, enquiry);
           return;
         }
