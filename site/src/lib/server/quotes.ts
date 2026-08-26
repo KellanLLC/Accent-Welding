@@ -1,5 +1,5 @@
 import type { Quote, SpecRow } from '@/lib/panel-types';
-import { afterResponse, db } from './env';
+import { db } from './env';
 import { normalisePhone } from './phone';
 import { readSettings } from './settings';
 import { sendSms } from './sms';
@@ -79,26 +79,21 @@ export async function floodGuardTripped(ip: string) {
 }
 
 /**
- * Texts the owner about a new request. Runs after the response has gone, so
- * GoHighLevel being down can never fail a customer's submission — it is
- * already saved.
+ * Texts the owner about a new request. Called after the response has gone out
+ * (and after the spam scan has cleared the submission), so GoHighLevel being
+ * down can never fail a customer's submission — it is already saved.
  */
-export function notifyOwnerOfQuote(id: number, name: string, phoneRaw: string, product: string) {
-  afterResponse(
-    (async () => {
-      const settings = await readSettings();
-      if (settings.notify_owner !== '1') return;
-      const owner = normalisePhone(settings.owner_phone);
-      if (!owner) return;
-      await sendSms(
-        owner,
-        fill(
-          settings.owner_alert_template ||
-            'New request from {{name}} ({{phone}}): {{product}}. See it here: {{link}}',
-          { name, phone: phoneRaw, product, link: panelLink(id) },
-        ),
-      );
-    })(),
-    'owner notify',
+export async function sendOwnerAlert(id: number, name: string, phoneRaw: string, product: string) {
+  const settings = await readSettings();
+  if (settings.notify_owner !== '1') return;
+  const owner = normalisePhone(settings.owner_phone);
+  if (!owner) return;
+  await sendSms(
+    owner,
+    fill(
+      settings.owner_alert_template ||
+        'New request from {{name}} ({{phone}}): {{product}}. See it here: {{link}}',
+      { name, phone: phoneRaw, product, link: panelLink(id) },
+    ),
   );
 }

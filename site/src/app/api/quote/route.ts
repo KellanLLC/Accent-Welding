@@ -1,8 +1,9 @@
-import { afterResponse } from '@/lib/server/env';
+import { afterResponse, db } from '@/lib/server/env';
 import { keepClockRunning } from '@/lib/server/followups';
 import { json, readJson, sameOrigin, str } from '@/lib/server/http';
 import { normalisePhone } from '@/lib/server/phone';
-import { floodGuardTripped, insertQuote, notifyOwnerOfQuote } from '@/lib/server/quotes';
+import { floodGuardTripped, insertQuote, sendOwnerAlert } from '@/lib/server/quotes';
+import { type Enquiry, reportSpam, scanEnquiry } from '@/lib/server/spamscan';
 
 export const dynamic = 'force-dynamic';
 
@@ -49,11 +50,28 @@ export async function POST(req: Request) {
   const body = await readJson<Payload>(req);
   if (!body) return json({ ok: false, error: 'Bad JSON' }, 400);
 
-  if (str(body.website, 50)) return json({ ok: true });
-
   const product = str(body.product, 120);
   const notes = str(body.notes, 4000);
-  if (/^marketing/i.test(product) || SPAM_TELLS.some((t) => t.test(`${product} ${notes}`))) {
+  const enquiry: Enquiry = {
+    product,
+    notes,
+    name: str(body.name, 120),
+    phone: str(body.phone, 40),
+    email: str(body.email, 160),
+    town: str(body.where, 120),
+  };
+
+  if (str(body.website, 50)) {
+    afterResponse(reportSpam('Hidden honeypot field (bot)', '', enquiry), 'spam report');
+    return json({ ok: true });
+  }
+  if (/^marketing/i.test(product)) {
+    afterResponse(reportSpam('Picked the Marketing / SEO bait option', '', enquiry), 'spam report');
+    return json({ ok: true });
+  }
+  const tell = SPAM_TELLS.find((t) => t.test(`${product} ${notes}`));
+  if (tell) {
+    afterResponse(reportSpam('Keyword match', String(tell), enquiry), 'spam report');
     return json({ ok: true });
   }
 
@@ -94,7 +112,25 @@ export async function POST(req: Request) {
     userAgent: (req.headers.get('User-Agent') || '').slice(0, 400),
   });
 
-  if (inserted) notifyOwnerOfQuote(inserted.id, name, phoneRaw, product || 'Enquiry');
+  // The AI layer runs after the response is out, so the customer never waits
+  // on Gemini. A spam verdict pulls the row back out of the panel and posts
+  // it to Discord instead of texting the owner; anything else — including the
+  // scan failing — goes to the owner as normal.
+  if (inserted) {
+    const id = inserted.id;
+    afterResponse(
+      (async () => {
+        const verdict = await scanEnquiry(enquiry);
+        if (verdict?.spam) {
+          await db().prepare('DELETE FROM quotes WHERE id = ?1').bind(id).run();
+          await reportSpam('AI scan', verdict.reason, enquiry);
+          return;
+        }
+        await sendOwnerAlert(id, name, phoneRaw, product || 'Enquiry');
+      })(),
+      'spam scan',
+    );
+  }
   afterResponse(keepClockRunning(), 'clock');
 
   return json({ ok: true, id: inserted?.id });
