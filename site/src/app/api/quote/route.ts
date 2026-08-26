@@ -3,7 +3,7 @@ import { keepClockRunning } from '@/lib/server/followups';
 import { json, readJson, sameOrigin, str } from '@/lib/server/http';
 import { normalisePhone } from '@/lib/server/phone';
 import { floodGuardTripped, insertQuote, sendOwnerAlert } from '@/lib/server/quotes';
-import { type Enquiry, reportSpam, scanEnquiry } from '@/lib/server/spamscan';
+import { type Enquiry, reportScanDown, reportSpam, scanEnquiry } from '@/lib/server/spamscan';
 
 export const dynamic = 'force-dynamic';
 
@@ -135,14 +135,21 @@ export async function POST(req: Request) {
     const id = inserted.id;
     afterResponse(
       (async () => {
-        const verdict = await scanEnquiry(enquiry);
-        if (verdict?.spam) {
+        const result = await scanEnquiry(enquiry);
+        if ('spam' in result && result.spam) {
           await db()
             .prepare('UPDATE quotes SET spam_via = ?1, spam_reason = ?2 WHERE id = ?3')
-            .bind('AI scan', verdict.reason || null, id)
+            .bind('AI scan', result.reason || null, id)
             .run();
-          await reportSpam('AI scan', verdict.reason, enquiry);
+          await reportSpam('AI scan', result.reason, enquiry);
           return;
+        }
+        // A broken scan never blocks a lead — it goes to the owner as normal,
+        // and the channel gets told it went through unscreened.
+        if ('failed' in result) {
+          await reportScanDown(result.failed, enquiry).catch((err) =>
+            console.error('[spam report]', err instanceof Error ? err.message : err),
+          );
         }
         await sendOwnerAlert(id, name, phoneRaw, product || 'Enquiry');
       })(),

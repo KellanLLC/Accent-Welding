@@ -22,7 +22,7 @@ export function SpamView({ spam, setData }: { spam: Quote[]; setData: SetData })
       </p>
       {spam.length === 0 ? (
         <Empty title="Nothing caught">
-          Anything the trap blocks shows up here, and in the Discord channel.
+          Anything the trap blocks shows up here without texting anyone.
         </Empty>
       ) : (
         <ul className={s.list}>
